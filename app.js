@@ -135,7 +135,7 @@
   var JOB = window.JOB_PAGE || {};
   var lang = localStorage.getItem("crew-lang") || "en";
   if (!UI[lang]) lang = "en";
-  var phase = localStorage.getItem("crew-phase-" + JOB.id) || "rough";
+  var phase = localStorage.getItem("crew-phase-" + JOB.id) || "trim";
   if (phase !== "trim") phase = "rough";
   var photos = []; // metadata records from GET /api/photos?job=<id>
   var seeds = [];  // migrated photos shipped with the site (seed-photos.json); display-only, never uploaded or deleted
