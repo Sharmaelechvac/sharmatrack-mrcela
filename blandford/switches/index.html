@@ -146,7 +146,7 @@ var DEVICES = [
   {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05984", "room": "GUEST ROOM 2", "load": "DOWNLIGHTS — gang 1 of 3", "def": 3},
   {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06055", "room": "GUEST ROOM 2", "load": "EMPTY (no load) — gang 2 of 3", "def": 3},
   {"model": "DECORA", "serial": "", "id": "GB2-GANG3", "room": "GUEST ROOM 2", "load": "FAN — gang 3 of 3 · Decora regular switch (Legrand)", "def": 3},
-  {"model": "HZ2-DIMUEX-W", "serial": "M201849004", "room": "OUTSIDE OF GUEST ROOM 2", "load": "KEYPAD (POWER ONLY)", "def": 3}
+  {"model": "HZ2-DIMUEX-W", "serial": "", "id": "OGR2-KEYPAD", "room": "OUTSIDE OF GUEST ROOM 2", "load": "KEYPAD (POWER ONLY)", "def": 3}
 ];
 var EXTRAS = [];
 var KEY = "blandford-switches-v1";
@@ -200,7 +200,7 @@ var FIELDNOTES = {
   "2624CRO05984": "Gang 1 of the GB2 3-gang box. Serial read off this device's own front SN sticker in Sanjay's 11/20 box photo. The Excel sheet placed this serial in Guest Room 5 Bath — the sheet's room assignments were wrong and were removed 11/20; this log is built from the devices as actually installed. Room as-built: 6 downlights (print shows 4), confirmed by Sanjay.",
   "2624CRO06055": "Gang 2 — EMPTY, no load (3-gang rule: 2 Crestron + 1 Decora). Serial read off its front SN sticker in the same box photo; the sheet placed this serial in the Dining Room. Last digit read as 5 — to be verified against the next upload/scan.",
   "GB2-GANG3": "Gang 3 — the fan's Decora (Legrand) regular switch. Regular switches carry no Crestron serial; logged by position.",
-  "M201849004": "INSTALLED 11/20 — photos below. Label from the device in hand: MODEL M201849004 · SKU HZ2-DIMUEX · PN 6513112."
+  "OGR2-KEYPAD": "INSTALLED 11/20 — photos below. Serial NOT yet captured: the SN is on the front sticker (same 2624CRO… sticker as the in-box dimmers), which sits under the faceplate in the installed photo. Side label from the device in hand reads MODEL M201849004 · SKU HZ2-DIMUEX · PN 6513112 — that MODEL line is not the serial (flagged by Sanjay 11/20). Log the real SN from the next front photo or scan."
 };
 var STAGES = ["Not started", "Installed", "Programmed", "Verified"];
 function shortModel(m){ if (m === "DECORA") return "DECORA SWITCH"; return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
@@ -246,7 +246,7 @@ function render(){
     }
     groups[room].forEach(function(d){
       var s = stageOf(devId(d));
-      out += '<div class="dev" id="dev-' + esc(devId(d)) + '"><span class="serial">' + esc(d.serial || "NO SERIAL — DECORA") + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
+      out += '<div class="dev" id="dev-' + esc(devId(d)) + '"><span class="serial">' + esc(d.serial || (d.model === "DECORA" ? "NO SERIAL — DECORA" : "SN — NOT YET CAPTURED")) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
       if (FIELDNOTES[devId(d)]) out += '<div class="fieldnote">' + esc(FIELDNOTES[devId(d)]) + '</div>';
       out += '<div class="seg" data-serial="' + esc(devId(d)) + '">';
