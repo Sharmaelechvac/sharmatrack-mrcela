@@ -60,6 +60,14 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 #camhint{color:#fff;text-align:center;padding:10px;font-weight:700}
 @keyframes flashring{0%{box-shadow:0 0 0 4px var(--ok)}100%{box-shadow:0 0 0 0 rgba(28,124,67,0)}}
 .flash{animation:flashring 1.2s ease-in-out 3}
+.vizbtn{margin:2px 0 10px;background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee;border-radius:9px;padding:9px 12px;font-weight:800;cursor:pointer}
+.roomviz{margin:0 0 12px;border:1.5px solid #bcd6ee;border-radius:10px;overflow:hidden}
+.roomviz img{width:100%;display:block}
+.roomviz .vizcap{padding:8px 10px;font-weight:700;color:var(--brand2);background:#eef5fc;font-size:.92rem}
+.fieldnote{margin-top:6px;background:#eef7ee;border:1px solid #bfe0bf;border-radius:8px;padding:7px 9px;font-size:.88rem;font-weight:600;color:#205c2a}
+.rules{background:#eef5fc;border:1.5px solid #bcd6ee;border-radius:14px;padding:12px;margin-bottom:14px}
+.rules .st{font-weight:900;color:var(--brand2);font-size:1.05rem;margin-bottom:6px}
+.rules div{margin:3px 0;font-size:1rem}
 </style></head><body>
 <div class="topbar"><a href="../">&larr; 9700 Blandford</a><span class="addr">Smart Switches — Electrical</span><button type="button" onclick="location.reload()">&#8635; Refresh</button></div>
 <div class="wrap">
@@ -77,6 +85,11 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
     <div class="matchcard" id="matchCard"></div>
     <div class="nomatch" id="noMatch"></div>
   </div>
+  <div class="rules">
+    <div class="st">Field rules — this house (Sanjay)</div>
+    <div>• All fans: <b>REGULAR</b> switch — never a Crestron dimmer</div>
+    <div>• Laundries &amp; closets: <b>MOTION SENSOR</b></div>
+  </div>
   <div class="controls">
     <input id="q" type="search" autocomplete="off" placeholder="Search serial, room, or load…">
     <select id="roomSel"><option value="">All rooms</option></select>
@@ -92,6 +105,39 @@ var EXTRAS = [{"room": "SUMMER KITCHEN", "load": "FAN 1"}, {"room": "SUMMER KITC
 var KEY = "blandford-switches-v1";
 var state = {};
 try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { state = {}; }
+var ROOMVIZ = {
+  "FOYER": {img: "foyer.jpg", plan: "FOYER · E1.1 · 1st floor"},
+  "GUEST ROOM 5 (2ND MASTER)": {img: "guest-room-5.jpg", plan: "BEDROOM 5 · E1.2 · 2nd floor"},
+  "GUEST ROOM 5 BATHROOM": {img: "guest-room-5-bath.jpg", plan: "BATHROOM 5 · E1.2 · 2nd floor"},
+  "KITCHEN BY MUD ROOM": {img: "kitchen-mud.jpg", plan: "KITCHEN / PANTRY run · E1.1 · 1st floor"},
+  "DINING ROOM": {img: "dining.jpg", plan: "DINING AREA · E1.1 · 1st floor"},
+  "MASTER BATH SHOWER": {img: "master-bath.jpg", plan: "MASTER BATHROOM · E1.1 · 1st floor"},
+  "MASTER BATH ENTRY": {img: "master-bath.jpg", plan: "MASTER BATHROOM · E1.1 · 1st floor"},
+  "MASTER BATH LEFT VANITY": {img: "master-bath.jpg", plan: "MASTER BATHROOM · E1.1 · 1st floor"},
+  "MASTER BATH RIGHT VANITY": {img: "master-bath.jpg", plan: "MASTER BATHROOM · E1.1 · 1st floor"},
+  "LIVING ROOM": {img: "living.jpg", plan: "FAMILY ROOM · E1.1 · 1st floor"},
+  "BUTLER PANTRY": {img: "butler-pantry.jpg", plan: "KITCHEN / PANTRY run · E1.1 · 1st floor"},
+  "MASTER BEDROOM": {img: "master-bedroom.jpg", plan: "MASTER BEDROOM · E1.1 · 1st floor"},
+  "MASTER BEDROOM BEDSIDE": {img: "master-bedroom.jpg", plan: "MASTER BEDROOM · E1.1 · 1st floor"},
+  "MASTER ENTRY": {img: "master-bedroom.jpg", plan: "MASTER BEDROOM · E1.1 · 1st floor"},
+  "MASTER BEDROOM BY SLIDER": {img: "master-bedroom.jpg", plan: "MASTER BEDROOM · E1.1 · 1st floor"},
+  "TOP OF STAIRS": {img: "top-of-stairs.jpg", plan: "Stair hall · E1.2 · 2nd floor"},
+  "SUMMER KITCHEN": {img: "summer-kitchen.jpg", plan: "SUMMER KITCHEN · E1.1 · 1st floor"},
+  "SUMMER KITCHEN GRILLE": {img: "summer-kitchen.jpg", plan: "SUMMER KITCHEN · E1.1 · 1st floor"},
+  "BOTTOM OF STAIRS": {img: "bottom-of-stairs.jpg", plan: "Stair base by the Foyer · E1.1 · 1st floor"},
+  "MUD ROOM": {img: "mud-room.jpg", plan: "Utility / mud room by the garage · E1.1 · 1st floor"},
+  "GARAGE": {img: "garage.jpg", plan: "TWO CAR GARAGE · E1.1 · 1st floor"},
+  "OFFICE": {img: "office.jpg", plan: "OFFICE · E1.1 · 1st floor"},
+  "KITCHEN ISLAND?": {img: "kitchen-island.jpg", plan: "KITCHEN island · E1.1 · 1st floor"},
+  "OUTSIDE OF GUEST ROOM 2": {img: "outside-gb2.jpg", plan: "Wall at BEDROOM 2 door, by W.I.C. 2 · E1.2 · 2nd floor"},
+  "GUEST ROOM 2": {img: "guest-room-2.jpg", plan: "BEDROOM 2 · E1.2 · 2nd floor"},
+  "GUEST ROOM 3": {img: "guest-room-3.jpg", plan: "BEDROOM 3 · E1.2 · 2nd floor"},
+  "GUEST ROOM 4": {img: "guest-room-4.jpg", plan: "BEDROOM 4 · E1.2 · 2nd floor"}
+};
+var FIELDNOTES = {
+  "2624CRO06016": "INSTALLED 11/20 — photos on the Blandford page. Label logged from the device in hand: HZ2-DIMUEX · M201849004 · PN 6513112.",
+  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20."
+};
 var STAGES = ["Not started", "Installed", "Programmed", "Verified"];
 function shortModel(m){ return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
 function stageOf(id){ return state[id] || 0; }
@@ -121,10 +167,13 @@ function render(){
   var out = "";
   order.forEach(function(room){
     out += '<h2 class="room">' + esc(room) + ' <span style="color:var(--muted);font-size:1rem">(' + groups[room].length + ')</span></h2>';
+    var viz = ROOMVIZ[room];
+    if (viz) out += '<button type="button" class="vizbtn">See it on the drawing</button><div class="roomviz hidden"><img loading="lazy" src="rooms/' + viz.img + '" alt=""><div class="vizcap">Print: ' + esc(viz.plan) + '</div></div>';
     groups[room].forEach(function(d){
       var s = stageOf(d.serial);
       out += '<div class="dev" id="dev-' + esc(d.serial) + '"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
+      if (FIELDNOTES[d.serial]) out += '<div class="fieldnote">' + esc(FIELDNOTES[d.serial]) + '</div>';
       out += '<div class="seg" data-serial="' + esc(d.serial) + '">';
       STAGES.forEach(function(label, i){
         out += '<button type="button" data-stage="' + i + '"' + (s===i ? ' class="on' + (i===3?' done':'') + '"' : '') + '>' + label + '</button>';
@@ -136,6 +185,8 @@ function render(){
   counts();
 }
 document.getElementById("list").addEventListener("click", function(e){
+  var vb = e.target.closest(".vizbtn");
+  if (vb) { var nx = vb.nextElementSibling; if (nx) nx.classList.toggle("hidden"); return; }
   var b = e.target.closest("button[data-stage]"); if (!b) return;
   var serial = b.parentElement.getAttribute("data-serial");
   state[serial] = parseInt(b.getAttribute("data-stage"), 10);
