@@ -67,6 +67,11 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .roomviz{margin:0 0 12px;border:1.5px solid #bcd6ee;border-radius:10px;overflow:hidden}
 .roomviz img{width:100%;display:block}
 .roomviz .vizcap{padding:8px 10px;font-weight:700;color:var(--brand2);background:#eef5fc;font-size:.92rem}
+.roomphotos{margin:0 0 12px}
+.roomphotos .phtitle{font-weight:900;color:var(--brand2);margin:2px 0 8px}
+.roomphotos .ph{border:1.5px solid #bcd6ee;border-radius:10px;overflow:hidden;margin-bottom:10px;background:#fff}
+.roomphotos img{width:100%;display:block}
+.roomphotos .phcap{padding:8px 10px;font-weight:700;color:var(--brand2);background:#eef5fc;font-size:.92rem}
 .fieldnote{margin-top:6px;background:#eef7ee;border:1px solid #bfe0bf;border-radius:8px;padding:7px 9px;font-size:.88rem;font-weight:600;color:#205c2a}
 .rules{background:#eef5fc;border:1.5px solid #bcd6ee;border-radius:14px;padding:12px;margin-bottom:14px}
 .rules .st{font-weight:900;color:var(--brand2);font-size:1.05rem;margin-bottom:6px}
@@ -171,9 +176,20 @@ var ROOMVIZ = {
   "GUEST ROOM 3": {img: "guest-room-3.jpg", plan: "BEDROOM 3 · E1.2 · 2nd floor"},
   "GUEST ROOM 4": {img: "guest-room-4.jpg", plan: "BEDROOM 4 · E1.2 · 2nd floor"}
 };
+var ROOMPHOTOS = {
+  "GUEST ROOM 2": [
+    {src: "blandford-guest-bedroom-2-switch-box-annotated.jpg", cap: "Switch box at the door — labeled: 1 Crestron (lights) · 2 Crestron (empty) · 3 Decora (fan)"},
+    {src: "blandford-guest-bedroom-2-switch-box.jpg", cap: "Switch box at the door — original photo"},
+    {src: "blandford-guest-bedroom-2-lights.jpg", cap: "Downlights in and on — 6 as built (print shows 4)"}
+  ],
+  "OUTSIDE OF GUEST ROOM 2": [
+    {src: "blandford-gb2-outside-installed.jpg", cap: "Keypad installed at the Bedroom 2 door"},
+    {src: "blandford-gb2-outside-device.jpg", cap: "Device in hand — serial label"}
+  ]
+};
 var FIELDNOTES = {
-  "2624CRO06016": "INSTALLED 11/20 — photos on the Blandford page. Label logged from the device in hand: HZ2-DIMUEX · M201849004 · PN 6513112.",
-  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20. Its 3-gang box at the door: 1 = this Crestron (lights), 2 = Crestron EMPTY (no load), 3 = Decora (fan, regular). Labeled photo on the Blandford page."
+  "2624CRO06016": "INSTALLED 11/20 — photos below. Label logged from the device in hand: HZ2-DIMUEX · M201849004 · PN 6513112.",
+  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20. Its 3-gang box at the door: 1 = this Crestron (lights), 2 = Crestron EMPTY (no load), 3 = Decora (fan, regular). Labeled photo below."
 };
 var STAGES = ["Not started", "Installed", "Programmed", "Verified"];
 function shortModel(m){ return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
@@ -206,6 +222,12 @@ function render(){
     out += '<h2 class="room">' + esc(room) + ' <span class="rcount">(' + groups[room].length + ')</span></h2>';
     var viz = ROOMVIZ[room];
     if (viz) out += '<button type="button" class="vizbtn">See where this room is</button><div class="roomviz hidden"><img loading="lazy" src="rooms/full-' + viz.img + '" alt=""><div class="vizcap">Full floor plan — this room is RINGED in red</div><img loading="lazy" src="rooms/' + viz.img + '" alt=""><div class="vizcap">Close-up · Print: ' + esc(viz.plan) + '</div></div>';
+    var photos = ROOMPHOTOS[room];
+    if (photos) {
+      out += '<div class="roomphotos"><div class="phtitle">Field photos — switch boxes</div>';
+      photos.forEach(function(p){ out += '<div class="ph"><img loading="lazy" src="../../seed-photos/' + p.src + '" alt=""><div class="phcap">' + esc(p.cap) + '</div></div>'; });
+      out += '</div>';
+    }
     groups[room].forEach(function(d){
       var s = stageOf(d.serial);
       out += '<div class="dev" id="dev-' + esc(d.serial) + '"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
