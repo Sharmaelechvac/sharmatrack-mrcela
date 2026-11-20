@@ -1,0 +1,28 @@
+{
+  "app": "SHARMATRACK",
+  "edition": "mrcela",
+  "builder": "MRCELA Custom Homes",
+  "builderLogo": "mrcela-logo.png",
+  "builderLogoStatus": "on-file",
+  "trades": [
+    "Electrical"
+  ],
+  "liveUrl": "https://sharmaelechvac.github.io/sharmatrack-mrcela/",
+  "repo": "Sharmaelechvac/sharmatrack-mrcela",
+  "shell": {
+    "macos": "canonical",
+    "skBridge": "canonical"
+  },
+  "shellSource": "~/workspace/sharmatrack-core (edit the shell there, run tools/sync.py \u2014 never fork shell files here)",
+  "houses": [
+    {
+      "dir": "blandford",
+      "jobId": "blandford",
+      "address": "9700 Blandford Rd",
+      "city": "Orlando, FL",
+      "trades": [
+        "Electrical"
+      ]
+    }
+  ]
+}
