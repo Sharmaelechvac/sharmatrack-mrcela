@@ -4,6 +4,9 @@
 <title>Smart Switches — 9700 Blandford Rd · SHARMATRACK</title>
 <link rel="icon" href="../../sharmatrack-app-icon.png">
 <link rel="apple-touch-icon" href="../../sharmatrack-app-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--brand:#0058a3;--brand2:#004585;--ink:#16324a;--muted:#55708c;--line:#d9e6f2;--card:#fff;--bg:#f2f7fc;--ok:#1c7c43;--amber:#b97a0c}
 *{box-sizing:border-box}
@@ -68,10 +71,41 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .rules{background:#eef5fc;border:1.5px solid #bcd6ee;border-radius:14px;padding:12px;margin-bottom:14px}
 .rules .st{font-weight:900;color:var(--brand2);font-size:1.05rem;margin-bottom:6px}
 .rules div{margin:3px 0;font-size:1rem}
+/* ——— Brand restyle: SHARMATRACK identity ——— */
+body{font-family:"Inter",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.jobbar{position:sticky;top:0;z-index:60;background:var(--brand2);color:#fff;display:flex;align-items:center;gap:10px;padding:9px 14px}
+.jobbar .jb-brand{display:flex;align-items:center;gap:9px;font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:.14em}
+.jobbar .jb-brand img{width:30px;height:30px;border-radius:8px;display:block}
+.jobbar .jb-addr{margin-left:auto;font-weight:600;font-size:.92rem;color:#cfe0f2;text-align:right}
+.subbar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-bottom:1px solid var(--line)}
+.subbar a{color:var(--brand2);font-weight:800;text-decoration:none}
+.subbar button{margin-left:auto;border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:999px;padding:8px 14px;font-weight:800;font-size:.95rem;cursor:pointer}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.duo-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 10px rgba(0,69,133,.08);display:flex;align-items:center;justify-content:center;padding:12px 10px;min-height:86px}
+.duo-card img{display:block;object-fit:contain}
+.duo-sharma{height:58px;max-width:100%}
+.duo-mrcela{height:44px;max-width:100%}
+.hero{background:#fff;border:1px solid var(--line);border-left:6px solid var(--brand);border-radius:14px;color:var(--ink);padding:16px;box-shadow:0 2px 10px rgba(0,69,133,.08)}
+.hero h1{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:2rem;letter-spacing:.04em;color:var(--brand2);text-transform:uppercase}
+.hero .sub{color:var(--muted)}
+.hero .trade{display:inline-block;background:var(--brand);color:#fff;font-weight:800;font-size:.8rem;letter-spacing:.12em;border-radius:6px;padding:3px 9px;margin-bottom:8px}
+.count{box-shadow:0 2px 8px rgba(0,69,133,.06)}
+.count .n{font-family:"IBM Plex Mono",ui-monospace,monospace}
+h2.room{background:var(--brand);color:#fff;font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.45rem;letter-spacing:.05em;text-transform:uppercase;padding:10px 14px;border-radius:12px;margin:26px 0 12px}
+h2.room .rcount{color:#cfe0f2;font-size:1.05rem}
+.dev{border-left:5px solid var(--brand);box-shadow:0 2px 8px rgba(0,69,133,.06)}
+.dev .serial{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.scan .st,.rules .st,.matchcard .mroom{font-family:"Barlow Semi Condensed",sans-serif;letter-spacing:.03em}
+.st-footer{margin-top:34px;text-align:center}
+.st-footer img{height:44px;max-width:80%}
+.st-footer .st-tag{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;letter-spacing:.3em;color:var(--brand2);margin-top:6px}
+.st-footer .dev-credit{color:var(--muted);font-size:.9rem;margin-top:4px}
 </style></head><body>
-<div class="topbar"><a href="../">&larr; 9700 Blandford</a><span class="addr">Smart Switches — Electrical</span><button type="button" onclick="location.reload()">&#8635; Refresh</button></div>
+<div class="jobbar"><span class="jb-brand"><img src="../../sharmatrack-app-icon.png" alt="">SHARMATRACK</span><span class="jb-addr">9700 Blandford Rd · Orlando, FL</span></div>
+<div class="subbar"><a href="../">&larr; 9700 Blandford</a><button type="button" onclick="location.reload()">&#8635; Refresh</button></div>
 <div class="wrap">
-  <div class="hero"><h1>Smart Switches — Electrical</h1><div class="sub">9700 Blandford Rd · Orlando, FL · MRCELA Custom Homes<br>Crestron Horizon dimmers &amp; keypads — tracked by serial number</div></div>
+  <div class="duo"><span class="duo-card"><img class="duo-sharma" src="../../logo.png" alt="Sharma Electric &amp; HVAC"></span><span class="duo-card"><img class="duo-mrcela" src="../../mrcela-logo.png" alt="MRCELA Custom Homes"></span></div>
+  <div class="hero"><span class="trade">ELECTRICAL</span><h1>Smart Switches</h1><div class="sub">9700 Blandford Rd · Orlando, FL · MRCELA Custom Homes<br>Crestron Horizon dimmers &amp; keypads — tracked by serial number</div></div>
   <div class="counts">
     <div class="count"><div class="n" id="c-inst">0/67</div><div class="l">Installed</div></div>
     <div class="count"><div class="n" id="c-prog">0/67</div><div class="l">Programmed</div></div>
@@ -98,6 +132,7 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
   <div id="list"></div>
   <div class="note" id="fanNote"></div>
   <div class="foot">Sharma Electric &amp; HVAC · Lic. EC13013924 · Status is saved on this device.</div>
+  <div class="st-footer"><img src="../../sharmatrack-logo-blue-on-white.png" alt="SHARMATRACK"><div class="st-tag">JOB TRACKER</div><div class="dev-credit">Developed by Sanjay Sharma</div></div>
 </div>
 <script>
 var DEVICES = [{"model": "HZ2-DIMUEX-W", "serial": "2624CRO06121", "room": "FOYER", "load": "EXTERIOR ENTRY"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00889", "room": "FOYER", "load": "EXTERIOR ENTRY SCONCE?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00879", "room": "FOYER", "load": "UPLIGHTS?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00864", "room": "FOYER", "load": "ENTRY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00863", "room": "FOYER", "load": "SOFFIT"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00849", "room": "FOYER", "load": "ART LIGHT?"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06171", "room": "LIVING ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06167", "room": "LIVING ROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06126", "room": "LIVING ROOM", "load": "NICHE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06125", "room": "KITCHEN BY MUD ROOM", "load": "MUD ROOM DOWNLIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06123", "room": "KITCHEN BY MUD ROOM", "load": "ISLAND"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00894", "room": "KITCHEN BY MUD ROOM", "load": "PERIMETER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06112", "room": "KITCHEN BY MUD ROOM", "load": "FAMILY ROOM"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06086", "room": "BUTLER PANTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06077", "room": "BUTLER PANTRY", "load": "UNDER COUNTER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06071", "room": "BUTLER PANTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06070", "room": "KITCHEN ISLAND?", "load": "ISLAND UNDER COUNTER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06061", "room": "DINING ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06055", "room": "DINING ROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06051", "room": "DINING ROOM", "load": "COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05923", "room": "DINING ROOM", "load": "SUMMER KIT DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00937", "room": "SUMMER KITCHEN", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00938", "room": "SUMMER KITCHEN", "load": "DOWNLIGHTS 2"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00949", "room": "SUMMER KITCHEN GRILLE", "load": "SCONCES"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01151", "room": "MUD ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01154", "room": "GARAGE", "load": "SOFFIT?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01157", "room": "BOTTOM OF STAIRS", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05826", "room": "BOTTOM OF STAIRS", "load": "STAIR LIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05921", "room": "OFFICE", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05922", "room": "MASTER BEDROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00891", "room": "MASTER BEDROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05933", "room": "MASTER BEDROOM", "load": "COVE LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05946", "room": "MASTER BEDROOM BY SLIDER", "load": "DIMMER/KEYPAD ONLY (POWER ONLY)"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00932", "room": "MASTER BEDROOM BEDSIDE", "load": ""}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00921", "room": "MASTER BEDROOM BEDSIDE", "load": ""}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00920", "room": "MASTER BATH ENTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00919", "room": "MASTER BATH LEFT VANITY", "load": "VANITY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00918", "room": "MASTER BATH RIGHT VANITY", "load": "VANITY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00898", "room": "MASTER BATH SHOWER", "load": "SHOWER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06029", "room": "MASTER BATH SHOWER", "load": "SHOWER COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05989", "room": "MASTER BATH SHOWER", "load": "FAN"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06006", "room": "MASTER BATH SHOWER", "load": "BATHTUB COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06021", "room": "TOP OF STAIRS", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05987", "room": "TOP OF STAIRS", "load": "LOFT DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06016", "room": "OUTSIDE OF GUEST ROOM 2", "load": "KEYPAD (POWER ONLY)"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06015", "room": "GUEST ROOM 2", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05948", "room": "GUEST ROOM 3", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05949", "room": "GUEST ROOM 4", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05953", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "VESTIBULE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05954", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05955", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05966", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05971", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "READING LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05973", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "READING LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05978", "room": "GUEST ROOM 5 BATHROOM", "load": "SHELF LIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05983", "room": "GUEST ROOM 5 BATHROOM", "load": "FAN"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05984", "room": "GUEST ROOM 5 BATHROOM", "load": "SHOWER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05985", "room": "GUEST ROOM 5 BATHROOM", "load": "MIRROR"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05986", "room": "GUEST ROOM 5 BATHROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05988", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2603CRO06283", "room": "MASTER ENTRY", "load": "OFFICE 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2603CRO06274", "room": "MASTER ENTRY", "load": "STAIR DOWNLIGHTS 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03508", "room": "TOP OF STAIRS", "load": "STAIR DOWNLIGHTS 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03494", "room": "GUEST ROOM 5 BATHROOM", "load": "DOWNLIGHTS 3-WAY"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03486", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2545CRO03473", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2336CRO01282", "room": "", "load": ""}];
@@ -166,7 +201,7 @@ function render(){
   order.sort(function(a,b){ if(a==="NO ROOM ON SHEET")return 1; if(b==="NO ROOM ON SHEET")return -1; return a<b?-1:1; });
   var out = "";
   order.forEach(function(room){
-    out += '<h2 class="room">' + esc(room) + ' <span style="color:var(--muted);font-size:1rem">(' + groups[room].length + ')</span></h2>';
+    out += '<h2 class="room">' + esc(room) + ' <span class="rcount">(' + groups[room].length + ')</span></h2>';
     var viz = ROOMVIZ[room];
     if (viz) out += '<button type="button" class="vizbtn">See where this room is</button><div class="roomviz hidden"><img loading="lazy" src="rooms/full-' + viz.img + '" alt=""><div class="vizcap">Full floor plan — this room is RINGED in red</div><img loading="lazy" src="rooms/' + viz.img + '" alt=""><div class="vizcap">Close-up · Print: ' + esc(viz.plan) + '</div></div>';
     groups[room].forEach(function(d){
