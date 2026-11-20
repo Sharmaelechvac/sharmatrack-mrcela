@@ -121,7 +121,7 @@ h2.room .rcount{color:#cfe0f2;font-size:1.05rem}
     <div class="st">Installing a switch? Scan it first</div>
     <button type="button" class="scanbtn" id="scanBtn">Scan serial number</button>
     <div class="or">— or type the serial —</div>
-    <input id="scanInput" type="text" autocomplete="off" placeholder="Serial, e.g. 2624CRO06121">
+    <input id="scanInput" type="text" autocomplete="off" placeholder="Serial, e.g. 2624CRO05984">
     <div class="matchcard" id="matchCard"></div>
     <div class="nomatch" id="noMatch"></div>
   </div>
@@ -142,11 +142,21 @@ h2.room .rcount{color:#cfe0f2;font-size:1.05rem}
   <div class="st-footer"><img src="../../sharmatrack-logo-blue-on-white.png" alt="SHARMATRACK"><div class="st-tag">JOB TRACKER</div><div class="dev-credit">Developed by Sanjay Sharma</div></div>
 </div>
 <script>
-var DEVICES = [{"model": "HZ2-DIMUEX-W", "serial": "2624CRO06121", "room": "FOYER", "load": "EXTERIOR ENTRY"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00889", "room": "FOYER", "load": "EXTERIOR ENTRY SCONCE?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00879", "room": "FOYER", "load": "UPLIGHTS?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00864", "room": "FOYER", "load": "ENTRY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00863", "room": "FOYER", "load": "SOFFIT"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00849", "room": "FOYER", "load": "ART LIGHT?"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06171", "room": "LIVING ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06167", "room": "LIVING ROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06126", "room": "LIVING ROOM", "load": "NICHE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06125", "room": "KITCHEN BY MUD ROOM", "load": "MUD ROOM DOWNLIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06123", "room": "KITCHEN BY MUD ROOM", "load": "ISLAND"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00894", "room": "KITCHEN BY MUD ROOM", "load": "PERIMETER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06112", "room": "KITCHEN BY MUD ROOM", "load": "FAMILY ROOM"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06086", "room": "BUTLER PANTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06077", "room": "BUTLER PANTRY", "load": "UNDER COUNTER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06071", "room": "BUTLER PANTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06070", "room": "KITCHEN ISLAND?", "load": "ISLAND UNDER COUNTER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06061", "room": "DINING ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06055", "room": "DINING ROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06051", "room": "DINING ROOM", "load": "COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05923", "room": "DINING ROOM", "load": "SUMMER KIT DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00937", "room": "SUMMER KITCHEN", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00938", "room": "SUMMER KITCHEN", "load": "DOWNLIGHTS 2"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00949", "room": "SUMMER KITCHEN GRILLE", "load": "SCONCES"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01151", "room": "MUD ROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01154", "room": "GARAGE", "load": "SOFFIT?"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO01157", "room": "BOTTOM OF STAIRS", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05826", "room": "BOTTOM OF STAIRS", "load": "STAIR LIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05921", "room": "OFFICE", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05922", "room": "MASTER BEDROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00891", "room": "MASTER BEDROOM", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05933", "room": "MASTER BEDROOM", "load": "COVE LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05946", "room": "MASTER BEDROOM BY SLIDER", "load": "DIMMER/KEYPAD ONLY (POWER ONLY)"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00932", "room": "MASTER BEDROOM BEDSIDE", "load": ""}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00921", "room": "MASTER BEDROOM BEDSIDE", "load": ""}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00920", "room": "MASTER BATH ENTRY", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00919", "room": "MASTER BATH LEFT VANITY", "load": "VANITY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00918", "room": "MASTER BATH RIGHT VANITY", "load": "VANITY DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2621CRO00898", "room": "MASTER BATH SHOWER", "load": "SHOWER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06029", "room": "MASTER BATH SHOWER", "load": "SHOWER COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05989", "room": "MASTER BATH SHOWER", "load": "FAN"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06006", "room": "MASTER BATH SHOWER", "load": "BATHTUB COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06021", "room": "TOP OF STAIRS", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05987", "room": "TOP OF STAIRS", "load": "LOFT DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06016", "room": "OUTSIDE OF GUEST ROOM 2", "load": "KEYPAD (POWER ONLY)"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06015", "room": "GUEST ROOM 2", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05948", "room": "GUEST ROOM 3", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05949", "room": "GUEST ROOM 4", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05953", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "VESTIBULE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05954", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05955", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "CHANDELIER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05966", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "COVE"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05971", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "READING LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05973", "room": "GUEST ROOM 5 (2ND MASTER)", "load": "READING LIGHT"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05978", "room": "GUEST ROOM 5 BATHROOM", "load": "SHELF LIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05983", "room": "GUEST ROOM 5 BATHROOM", "load": "FAN"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05984", "room": "GUEST ROOM 5 BATHROOM", "load": "SHOWER"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05985", "room": "GUEST ROOM 5 BATHROOM", "load": "MIRROR"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05986", "room": "GUEST ROOM 5 BATHROOM", "load": "DOWNLIGHTS"}, {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05988", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2603CRO06283", "room": "MASTER ENTRY", "load": "OFFICE 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2603CRO06274", "room": "MASTER ENTRY", "load": "STAIR DOWNLIGHTS 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03508", "room": "TOP OF STAIRS", "load": "STAIR DOWNLIGHTS 3-WAY?"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03494", "room": "GUEST ROOM 5 BATHROOM", "load": "DOWNLIGHTS 3-WAY"}, {"model": "HZ2-AUX-W", "serial": "2545CRO03486", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2545CRO03473", "room": "", "load": ""}, {"model": "HZ2-AUX-W", "serial": "2336CRO01282", "room": "", "load": ""}];
-var EXTRAS = [{"room": "SUMMER KITCHEN", "load": "FAN 1"}, {"room": "SUMMER KITCHEN", "load": "FAN 2"}];
+var DEVICES = [
+  {"model": "HZ2-DIMUEX-W", "serial": "2624CRO05984", "room": "GUEST ROOM 2", "load": "DOWNLIGHTS — gang 1 of 3", "def": 3},
+  {"model": "HZ2-DIMUEX-W", "serial": "2624CRO06055", "room": "GUEST ROOM 2", "load": "EMPTY (no load) — gang 2 of 3", "def": 3},
+  {"model": "DECORA", "serial": "", "id": "GB2-GANG3", "room": "GUEST ROOM 2", "load": "FAN — gang 3 of 3 · Decora regular switch (Legrand)", "def": 3},
+  {"model": "HZ2-DIMUEX-W", "serial": "M201849004", "room": "OUTSIDE OF GUEST ROOM 2", "load": "KEYPAD (POWER ONLY)", "def": 3}
+];
+var EXTRAS = [];
 var KEY = "blandford-switches-v1";
 var state = {};
 try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { state = {}; }
+var FIELD = [];
+try { FIELD = JSON.parse(localStorage.getItem(KEY + ":field") || "[]"); } catch (e) { FIELD = []; }
+function saveField(){ try { localStorage.setItem(KEY + ":field", JSON.stringify(FIELD)); } catch (e) {} }
+function allDevices(){ return DEVICES.concat(FIELD); }
+function devId(d){ return d.id || d.serial; }
 var ROOMVIZ = {
   "FOYER": {img: "foyer.jpg", plan: "FOYER · E1.1 · 1st floor"},
   "GUEST ROOM 5 (2ND MASTER)": {img: "guest-room-5.jpg", plan: "BEDROOM 5 · E1.2 · 2nd floor"},
@@ -187,16 +197,23 @@ var ROOMPHOTOS = {
   ]
 };
 var FIELDNOTES = {
-  "2624CRO06016": "INSTALLED 11/20 — photos below. Label logged from the device in hand: HZ2-DIMUEX · M201849004 · PN 6513112.",
-  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20. Its 3-gang box at the door: 1 = this Crestron (lights), 2 = Crestron EMPTY (no load), 3 = Decora (fan, regular). Labeled photo below."
+  "2624CRO05984": "Gang 1 of the GB2 3-gang box. Serial read off this device's own front SN sticker in Sanjay's 11/20 box photo. The Excel sheet placed this serial in Guest Room 5 Bath — the sheet's room assignments were wrong and were removed 11/20; this log is built from the devices as actually installed. Room as-built: 6 downlights (print shows 4), confirmed by Sanjay.",
+  "2624CRO06055": "Gang 2 — EMPTY, no load (3-gang rule: 2 Crestron + 1 Decora). Serial read off its front SN sticker in the same box photo; the sheet placed this serial in the Dining Room. Last digit read as 5 — to be verified against the next upload/scan.",
+  "GB2-GANG3": "Gang 3 — the fan's Decora (Legrand) regular switch. Regular switches carry no Crestron serial; logged by position.",
+  "M201849004": "INSTALLED 11/20 — photos below. Label from the device in hand: MODEL M201849004 · SKU HZ2-DIMUEX · PN 6513112."
 };
 var STAGES = ["Not started", "Installed", "Programmed", "Verified"];
-function shortModel(m){ return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
-function stageOf(id){ return state[id] || 0; }
+function shortModel(m){ if (m === "DECORA") return "DECORA SWITCH"; return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
+function stageOf(id){
+  if (state[id] != null) return state[id];
+  var found = null;
+  allDevices().forEach(function(x){ if (devId(x) === id) found = x; });
+  return found && found.def ? found.def : 0;
+}
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 function counts(){
   var inst=0, prog=0, ver=0;
-  DEVICES.forEach(function(d){ var s=stageOf(d.serial); if(s>=1)inst++; if(s>=2)prog++; if(s>=3)ver++; });
+  allDevices().forEach(function(d){ var s=stageOf(devId(d)); if(s>=1)inst++; if(s>=2)prog++; if(s>=3)ver++; });
   document.getElementById("c-inst").textContent = inst + "/" + DEVICES.length;
   document.getElementById("c-prog").textContent = prog + "/" + DEVICES.length;
   document.getElementById("c-ver").textContent = ver + "/" + DEVICES.length;
@@ -207,7 +224,7 @@ function render(){
   var roomSel = document.getElementById("roomSel").value;
   var todo = document.getElementById("todoOnly").checked;
   var groups = {}, order = [];
-  DEVICES.forEach(function(d){
+  allDevices().forEach(function(d){
     var room = d.room || "NO ROOM ON SHEET";
     if (roomSel && room !== roomSel) return;
     if (todo && stageOf(d.serial) >= 3) return;
@@ -228,11 +245,11 @@ function render(){
       out += '</div>';
     }
     groups[room].forEach(function(d){
-      var s = stageOf(d.serial);
-      out += '<div class="dev" id="dev-' + esc(d.serial) + '"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
+      var s = stageOf(devId(d));
+      out += '<div class="dev" id="dev-' + esc(devId(d)) + '"><span class="serial">' + esc(d.serial || "NO SERIAL — DECORA") + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
-      if (FIELDNOTES[d.serial]) out += '<div class="fieldnote">' + esc(FIELDNOTES[d.serial]) + '</div>';
-      out += '<div class="seg" data-serial="' + esc(d.serial) + '">';
+      if (FIELDNOTES[devId(d)]) out += '<div class="fieldnote">' + esc(FIELDNOTES[devId(d)]) + '</div>';
+      out += '<div class="seg" data-serial="' + esc(devId(d)) + '">';
       STAGES.forEach(function(label, i){
         out += '<button type="button" data-stage="' + i + '"' + (s===i ? ' class="on' + (i===3?' done':'') + '"' : '') + '>' + label + '</button>';
       });
@@ -255,7 +272,7 @@ document.getElementById("roomSel").addEventListener("change", render);
 document.getElementById("todoOnly").addEventListener("change", render);
 (function(){
   var rooms = {};
-  DEVICES.forEach(function(d){ rooms[d.room || "NO ROOM ON SHEET"] = 1; });
+  allDevices().forEach(function(d){ rooms[d.room || "NO ROOM ON SHEET"] = 1; });
   var sel = document.getElementById("roomSel");
   Object.keys(rooms).sort().forEach(function(r){ var o = document.createElement("option"); o.value = r; o.textContent = r; sel.appendChild(o); });
   if (EXTRAS.length) {
@@ -272,7 +289,7 @@ function findBySerial(raw){
   var n = normSerial(raw);
   if (n.length < 5) return null;
   var exact = null, partial = [];
-  DEVICES.forEach(function(d){
+  allDevices().forEach(function(d){
     var ds = normSerial(d.serial);
     if (ds === n) exact = d;
     else if (ds.indexOf(n) >= 0 || n.indexOf(ds) >= 0) partial.push(d);
@@ -283,22 +300,22 @@ function findBySerial(raw){
 }
 var lastScanSerial = null;
 function showMatch(d, raw){
-  lastScanSerial = d.serial;
+  lastScanSerial = devId(d);
   var card = document.getElementById("matchCard");
   document.getElementById("noMatch").classList.remove("show");
-  var s = stageOf(d.serial);
-  var btnLabel = s >= 1 ? "Already " + STAGES[s] + " — tap to keep it Installed" : "Mark as INSTALLED";
-  card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM ON SHEET") + '</div>' +
-    '<div class="mload">' + esc(d.load || "Load not on sheet") + ' · ' + esc(shortModel(d.model)) + '</div>' +
+  var s = stageOf(devId(d));
+  var btnLabel = s >= 3 ? "Already VERIFIED DONE" : "Mark VERIFIED DONE";
+  card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM LOGGED") + '</div>' +
+    '<div class="mload">' + esc(d.load || "Load not logged") + ' · ' + esc(shortModel(d.model)) + '</div>' +
     '<div class="mserial">' + esc(d.serial) + '</div>' +
     '<button type="button" id="markBtn">' + btnLabel + '</button>' +
     '<button type="button" class="undo" id="hideMatch">Not this one</button>';
   card.classList.add("show");
   document.getElementById("markBtn").addEventListener("click", function(){
-    if (stageOf(d.serial) < 1) { state[d.serial] = 1; save(); }
+    state[devId(d)] = 3; save();
     render();
-    card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM ON SHEET") + ' — INSTALLED &#10003;</div><div class="mload">' + esc(d.load || "Load not on sheet") + '</div><div class="mserial">' + esc(d.serial) + '</div>';
-    var el = document.getElementById("dev-" + d.serial);
+    card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM LOGGED") + ' — VERIFIED DONE &#10003;</div><div class="mload">' + esc(d.load || "Load not logged") + '</div><div class="mserial">' + esc(d.serial) + '</div>';
+    var el = document.getElementById("dev-" + devId(d));
     if (el) { el.scrollIntoView({block: "center"}); el.classList.add("flash"); }
   });
   document.getElementById("hideMatch").addEventListener("click", function(){ card.classList.remove("show"); });
@@ -307,8 +324,26 @@ function showMatch(d, raw){
 function showNoMatch(raw){
   document.getElementById("matchCard").classList.remove("show");
   var nm = document.getElementById("noMatch");
-  nm.textContent = "Serial " + raw + " is not on the 9700 Blandford sheet. Check the number, or add it to the sheet so it can be tracked.";
+  var opts = Object.keys(ROOMVIZ).map(function(r){ return '<option value="' + esc(r) + '">'; }).join("");
+  nm.innerHTML = "Serial " + esc(raw) + " is not in the field log yet. If you just installed it, log it here:" +
+    '<div style="margin-top:10px;display:flex;flex-direction:column;gap:8px">' +
+    '<input id="nfRoom" list="nfRooms" placeholder="Room (start typing)" style="font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%">' +
+    '<datalist id="nfRooms">' + opts + '</datalist>' +
+    '<input id="nfLoad" placeholder="Load (e.g. DOWNLIGHTS)" style="font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%">' +
+    '<button type="button" id="nfAdd" style="background:var(--ok);color:#fff;font-weight:800;font-size:1.05rem;border:0;border-radius:10px;padding:13px;cursor:pointer">Log as VERIFIED DONE</button></div>';
   nm.classList.add("show");
+  document.getElementById("nfAdd").addEventListener("click", function(){
+    var room = (document.getElementById("nfRoom").value || "").toUpperCase().trim();
+    var load = (document.getElementById("nfLoad").value || "").toUpperCase().trim();
+    if (!room) { document.getElementById("nfRoom").focus(); return; }
+    var clean = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    FIELD.push({"model": "HZ2-DIMUEX-W", "serial": clean, "room": room, "load": load, "def": 3, "field": true});
+    saveField();
+    nm.classList.remove("show");
+    render();
+    var el = document.getElementById("dev-" + clean);
+    if (el) { el.scrollIntoView({block: "center"}); el.classList.add("flash"); }
+  });
 }
 function handleScanValue(raw){
   var d = findBySerial(raw);
