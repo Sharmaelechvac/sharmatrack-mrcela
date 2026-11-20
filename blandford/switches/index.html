@@ -168,7 +168,7 @@ function render(){
   order.forEach(function(room){
     out += '<h2 class="room">' + esc(room) + ' <span style="color:var(--muted);font-size:1rem">(' + groups[room].length + ')</span></h2>';
     var viz = ROOMVIZ[room];
-    if (viz) out += '<button type="button" class="vizbtn">See it on the drawing</button><div class="roomviz hidden"><img loading="lazy" src="rooms/' + viz.img + '" alt=""><div class="vizcap">Print: ' + esc(viz.plan) + '</div></div>';
+    if (viz) out += '<button type="button" class="vizbtn">See where this room is</button><div class="roomviz hidden"><img loading="lazy" src="rooms/full-' + viz.img + '" alt=""><div class="vizcap">Full floor plan — this room is RINGED in red</div><img loading="lazy" src="rooms/' + viz.img + '" alt=""><div class="vizcap">Close-up · Print: ' + esc(viz.plan) + '</div></div>';
     groups[room].forEach(function(d){
       var s = stageOf(d.serial);
       out += '<div class="dev" id="dev-' + esc(d.serial) + '"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
