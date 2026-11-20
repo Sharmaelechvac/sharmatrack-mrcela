@@ -124,6 +124,7 @@ h2.room .rcount{color:#cfe0f2;font-size:1.05rem}
     <div class="st">Field rules — this house (Sanjay)</div>
     <div>• All fans: <b>REGULAR</b> switch — never a Crestron dimmer</div>
     <div>• Laundries &amp; closets: <b>MOTION SENSOR</b></div>
+    <div>• A <b>3-gang</b> box gets <b>2 Crestron + 1 Decora</b> — the Decora takes the fan</div>
   </div>
   <div class="controls">
     <input id="q" type="search" autocomplete="off" placeholder="Search serial, room, or load…">
@@ -172,7 +173,7 @@ var ROOMVIZ = {
 };
 var FIELDNOTES = {
   "2624CRO06016": "INSTALLED 11/20 — photos on the Blandford page. Label logged from the device in hand: HZ2-DIMUEX · M201849004 · PN 6513112.",
-  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20."
+  "2624CRO06015": "As-built: 6 downlights in this room (print shows 4) — changes confirmed by Sanjay 11/20. Its 3-gang box at the door: 1 = this Crestron (lights), 2 = Crestron EMPTY (no load), 3 = Decora (fan, regular). Labeled photo on the Blandford page."
 };
 var STAGES = ["Not started", "Installed", "Programmed", "Verified"];
 function shortModel(m){ return m.indexOf("AUX") >= 0 ? "AUX KEYPAD" : "DIMMER"; }
