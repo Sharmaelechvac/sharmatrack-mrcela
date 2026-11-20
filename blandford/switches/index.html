@@ -37,6 +37,29 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .note{background:#fff8e8;border:1px solid #ecd9a0;border-radius:14px;padding:12px 14px;margin:18px 0;font-size:.98rem}
 .foot{color:var(--muted);font-size:.9rem;text-align:center;margin-top:24px}
 .hidden{display:none}
+.scan{background:var(--card);border:2px solid var(--brand);border-radius:14px;padding:12px;margin-bottom:14px}
+.scan .st{font-weight:900;color:var(--brand2);font-size:1.1rem;margin-bottom:8px}
+.scanbtn{display:block;width:100%;background:linear-gradient(135deg,#0058a3,#004585);color:#fff;font-weight:800;font-size:1.1rem;border:0;border-radius:12px;padding:14px;cursor:pointer}
+.scan .or{text-align:center;color:var(--muted);font-weight:700;margin:10px 0 6px}
+.scan input{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink)}
+.matchcard{display:none;margin-top:12px;border:2px solid var(--ok);border-radius:12px;padding:12px;background:#f2faf5}
+.matchcard.show{display:block}
+.matchcard .mroom{font-weight:900;font-size:1.25rem;color:var(--brand2)}
+.matchcard .mload{font-weight:700}
+.matchcard .mserial{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.7rem;color:var(--muted)}
+.matchcard button{display:block;width:100%;margin-top:10px;background:var(--ok);color:#fff;font-weight:800;font-size:1.05rem;border:0;border-radius:10px;padding:13px;cursor:pointer}
+.matchcard .undo{background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee}
+.nomatch{display:none;margin-top:12px;border:2px solid var(--amber);border-radius:12px;padding:12px;background:#fff8e8;font-weight:700}
+.nomatch.show{display:block}
+#camwrap{display:none;position:fixed;inset:0;background:#000;z-index:200;flex-direction:column}
+#camwrap.show{display:flex}
+#camwrap video{flex:1;width:100%;object-fit:cover}
+#camwrap .cambar{display:flex;gap:10px;padding:14px;background:#111}
+#camwrap .cambar button{flex:1;padding:14px;border-radius:10px;border:0;font-weight:800;font-size:1.05rem;cursor:pointer}
+#camclose{background:#fff;color:#111}
+#camhint{color:#fff;text-align:center;padding:10px;font-weight:700}
+@keyframes flashring{0%{box-shadow:0 0 0 4px var(--ok)}100%{box-shadow:0 0 0 0 rgba(28,124,67,0)}}
+.flash{animation:flashring 1.2s ease-in-out 3}
 </style></head><body>
 <div class="topbar"><a href="../">&larr; 9700 Blandford</a><span class="addr">Smart Switches — Electrical</span><button type="button" onclick="location.reload()">&#8635; Refresh</button></div>
 <div class="wrap">
@@ -45,6 +68,14 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
     <div class="count"><div class="n" id="c-inst">0/67</div><div class="l">Installed</div></div>
     <div class="count"><div class="n" id="c-prog">0/67</div><div class="l">Programmed</div></div>
     <div class="count"><div class="n" id="c-ver">0/67</div><div class="l">Verified</div></div>
+  </div>
+  <div class="scan">
+    <div class="st">Installing a switch? Scan it first</div>
+    <button type="button" class="scanbtn" id="scanBtn">Scan serial number</button>
+    <div class="or">— or type the serial —</div>
+    <input id="scanInput" type="text" autocomplete="off" placeholder="Serial, e.g. 2624CRO06121">
+    <div class="matchcard" id="matchCard"></div>
+    <div class="nomatch" id="noMatch"></div>
   </div>
   <div class="controls">
     <input id="q" type="search" autocomplete="off" placeholder="Search serial, room, or load…">
@@ -92,7 +123,7 @@ function render(){
     out += '<h2 class="room">' + esc(room) + ' <span style="color:var(--muted);font-size:1rem">(' + groups[room].length + ')</span></h2>';
     groups[room].forEach(function(d){
       var s = stageOf(d.serial);
-      out += '<div class="dev"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
+      out += '<div class="dev" id="dev-' + esc(d.serial) + '"><span class="serial">' + esc(d.serial) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
       out += '<div class="seg" data-serial="' + esc(d.serial) + '">';
       STAGES.forEach(function(label, i){
@@ -123,5 +154,98 @@ document.getElementById("todoOnly").addEventListener("change", render);
   } else { document.getElementById("fanNote").classList.add("hidden"); }
   render();
 })();
+</script>
+<div id="camwrap"><div id="camhint">Point the camera at the serial barcode on the device or box</div><video id="camvideo" playsinline muted></video><div class="cambar"><button type="button" id="camclose">Cancel</button></div></div>
+<script>
+/* ---------- Serial scan-to-install ---------- */
+function normSerial(s){ return String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+function findBySerial(raw){
+  var n = normSerial(raw);
+  if (n.length < 5) return null;
+  var exact = null, partial = [];
+  DEVICES.forEach(function(d){
+    var ds = normSerial(d.serial);
+    if (ds === n) exact = d;
+    else if (ds.indexOf(n) >= 0 || n.indexOf(ds) >= 0) partial.push(d);
+  });
+  if (exact) return exact;
+  if (partial.length === 1) return partial[0];
+  return null;
+}
+var lastScanSerial = null;
+function showMatch(d, raw){
+  lastScanSerial = d.serial;
+  var card = document.getElementById("matchCard");
+  document.getElementById("noMatch").classList.remove("show");
+  var s = stageOf(d.serial);
+  var btnLabel = s >= 1 ? "Already " + STAGES[s] + " — tap to keep it Installed" : "Mark as INSTALLED";
+  card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM ON SHEET") + '</div>' +
+    '<div class="mload">' + esc(d.load || "Load not on sheet") + ' · ' + esc(shortModel(d.model)) + '</div>' +
+    '<div class="mserial">' + esc(d.serial) + '</div>' +
+    '<button type="button" id="markBtn">' + btnLabel + '</button>' +
+    '<button type="button" class="undo" id="hideMatch">Not this one</button>';
+  card.classList.add("show");
+  document.getElementById("markBtn").addEventListener("click", function(){
+    if (stageOf(d.serial) < 1) { state[d.serial] = 1; save(); }
+    render();
+    card.innerHTML = '<div class="mroom">' + esc(d.room || "NO ROOM ON SHEET") + ' — INSTALLED &#10003;</div><div class="mload">' + esc(d.load || "Load not on sheet") + '</div><div class="mserial">' + esc(d.serial) + '</div>';
+    var el = document.getElementById("dev-" + d.serial);
+    if (el) { el.scrollIntoView({block: "center"}); el.classList.add("flash"); }
+  });
+  document.getElementById("hideMatch").addEventListener("click", function(){ card.classList.remove("show"); });
+  card.scrollIntoView({block: "center"});
+}
+function showNoMatch(raw){
+  document.getElementById("matchCard").classList.remove("show");
+  var nm = document.getElementById("noMatch");
+  nm.textContent = "Serial " + raw + " is not on the 9700 Blandford sheet. Check the number, or add it to the sheet so it can be tracked.";
+  nm.classList.add("show");
+}
+function handleScanValue(raw){
+  var d = findBySerial(raw);
+  if (d) showMatch(d, raw); else showNoMatch(raw);
+}
+var scanInput = document.getElementById("scanInput");
+var scanTimer = null;
+scanInput.addEventListener("input", function(){
+  clearTimeout(scanTimer);
+  scanTimer = setTimeout(function(){ if (scanInput.value.trim().length >= 5) handleScanValue(scanInput.value.trim()); }, 350);
+});
+scanInput.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); handleScanValue(scanInput.value.trim()); } });
+/* Camera barcode scanning (BarcodeDetector where the browser offers it) */
+var camStream = null, camTimer = null;
+function stopCam(){
+  if (camTimer) { clearInterval(camTimer); camTimer = null; }
+  if (camStream) { camStream.getTracks().forEach(function(t){ t.stop(); }); camStream = null; }
+  document.getElementById("camwrap").classList.remove("show");
+}
+document.getElementById("camclose").addEventListener("click", stopCam);
+document.getElementById("scanBtn").addEventListener("click", function(){
+  if (!("BarcodeDetector" in window) || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    scanInput.focus();
+    scanInput.placeholder = "Camera scan not available here — type the serial";
+    return;
+  }
+  var detector;
+  try { detector = new BarcodeDetector({formats: ["code_128", "code_39", "code_93", "qr_code", "ean_13", "data_matrix", "itf"]}); }
+  catch (e) { scanInput.focus(); return; }
+  navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}}).then(function(stream){
+    camStream = stream;
+    var video = document.getElementById("camvideo");
+    video.srcObject = stream;
+    document.getElementById("camwrap").classList.add("show");
+    video.play();
+    camTimer = setInterval(function(){
+      detector.detect(video).then(function(codes){
+        if (codes && codes.length) {
+          var val = codes[0].rawValue || "";
+          stopCam();
+          scanInput.value = val;
+          handleScanValue(val);
+        }
+      }).catch(function(){});
+    }, 350);
+  }).catch(function(){ scanInput.focus(); });
+});
 </script>
 </body></html>
