@@ -20,6 +20,7 @@
 <div class="wrap" data-job="blandford">
   <div class="hero">
     <div class="duo"><span class="duo-card"><img class="duo-sharma" src="../logo.png" alt="Sharma Electric &amp; HVAC"></span><span class="duo-card mrcela-card"><img class="duo-mrcela" src="../mrcela-logo.png" alt="MRCELA Custom Homes"></span></div>
+    <div class="clubrow"><img src="/sharmatrack-mrcela/blandford/lakenona-logo.png" alt="Lake Nona Golf &amp; Country Club"></div>
     <h1>9700 Blandford Rd</h1>
     <div class="city">Orlando, FL 32827 · Lake Nona</div>
     <div class="lic">Sharma Electric &amp; HVAC · Lic. EC13013924 · CAC1823596</div>
@@ -66,6 +67,35 @@
     .dvmap .dvacts a { flex:1 1 200px; text-align:center; text-decoration:none; font-weight:700; padding:12px; border-radius:10px; font-size:15px; }
     .dvdir { background:#0058a3; color:#fff; }
     .dvopen { background:#fff; color:#0058a3; border:2px solid #0058a3; }
+  </style>
+  <style>
+    /* Lake Nona scene + refined hero box — 9700 Blandford (Sanjay 2026-11-22) */
+    body:has(.wrap[data-job="blandford"])::before{
+      content:""; position:fixed; inset:0; z-index:-1;
+      background:#33506b url("/sharmatrack-mrcela/blandford/lakenona-bg.jpg") center center/cover no-repeat;
+    }
+    .wrap[data-job="blandford"] .hero{
+      background:rgba(255,255,255,.93);
+      -webkit-backdrop-filter:blur(14px) saturate(1.3); backdrop-filter:blur(14px) saturate(1.3);
+      border:1px solid rgba(255,255,255,.7); border-radius:20px;
+      box-shadow:0 14px 34px rgba(4,20,40,.30);
+      padding:18px 16px 14px;
+    }
+    .wrap[data-job="blandford"] .duo{gap:10px; margin:2px auto 10px}
+    .wrap[data-job="blandford"] .duo-card{background:#fff; border:1px solid #d7e6f5; border-radius:14px; padding:6px 8px}
+    .wrap[data-job="blandford"] .duo-sharma{height:62px}
+    .wrap[data-job="blandford"] .clubrow{
+      background:#fff; border:1px solid #d7e6f5; border-radius:14px;
+      display:flex; align-items:center; justify-content:center;
+      padding:10px; margin:0 auto 12px; max-width:560px;
+    }
+    .wrap[data-job="blandford"] .clubrow img{height:88px; width:auto; max-width:100%; display:block}
+    .wrap[data-job="blandford"] .section,
+    .wrap[data-job="blandford"] .gear .card,
+    .wrap[data-job="blandford"] .progress{
+      background:rgba(255,255,255,.94);
+      box-shadow:0 10px 26px rgba(4,20,40,.22);
+    }
   </style>
   <a class="greenbtn" href="switches/" style="margin-bottom:14px">SMART SWITCHES — ELECTRICAL · Crestron tracker by serial · 67 devices →</a>
   <div class="section">
