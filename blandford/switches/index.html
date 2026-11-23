@@ -113,13 +113,114 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .hero,.count,.controls,.scan,.rules,.dev{background:rgba(255,255,255,.85)}
 .tracker-logo{display:block;width:100%;max-width:430px;height:auto;margin:0 auto 12px;background:#fff;border-radius:10px;padding:8px 10px;box-sizing:border-box}
 .subbar{background:rgba(255,255,255,.88)}
+/* ——— Crew serial photos / pending uploads (Sanjay 2026-11-23) ——— */
+.devtop{display:flex;gap:12px;align-items:flex-start}
+.devmain{flex:1;min-width:0}
+.photobox{position:relative;flex:0 0 auto;width:68px;height:68px;border-radius:12px;background:#e8edf2;border:1.5px solid #c9d6e4;color:var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:0;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.photobox:active{transform:scale(.96)}
+.photobox .pbplus{font-size:2rem;font-weight:800;line-height:1}
+.photobox .pblabel{font-size:.52rem;font-weight:800;letter-spacing:.14em;color:var(--muted);margin-top:2px}
+.photobox .pbthumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photobox .pbcount{position:absolute;top:3px;right:3px;background:var(--brand);color:#fff;font-size:.68rem;font-weight:800;border-radius:999px;min-width:19px;height:19px;line-height:19px;text-align:center;padding:0 4px}
+.crewrow{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.crewrow label{display:block;font-weight:800;color:var(--brand2);font-size:.95rem;margin-bottom:6px}
+.crewrow input{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
+.crewrow input.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
+#photoMsg{display:none;margin-top:10px;font-weight:700;color:var(--ok)}
+#photoMsg.show{display:block}
+#photoMsg.err{color:#b3261e}
+.subbar #pendingBtn{margin-left:auto;background:var(--brand);border-color:var(--brand);color:#fff}
+.subbar #pendingBtn ~ button{margin-left:0}
+.pbadge{display:inline-block;background:#fff;color:var(--brand2);border-radius:999px;min-width:22px;padding:1px 6px;margin-left:6px;font-size:.85rem;font-weight:900;text-align:center}
+.pbar{position:sticky;top:0;z-index:60;background:var(--brand2);color:#fff;display:flex;align-items:center;gap:12px;padding:10px 14px}
+.pbar button{background:#fff;color:var(--brand2);border:0;border-radius:999px;padding:8px 14px;font-weight:800;font-size:.95rem;cursor:pointer}
+.pbar .ptitle{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.25rem;letter-spacing:.06em;text-transform:uppercase}
+.pwrap{max-width:960px;margin:0 auto;padding:14px 14px 60px}
+.pnote{font-weight:700;color:var(--brand2);background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 12px}
+.pnote.warn{background:#fff8e8;border-color:#ecd9a0;color:#7a5200}
+.pactions{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
+.pactions button{flex:1 1 200px;padding:14px;border-radius:12px;font-weight:800;font-size:1.02rem;cursor:pointer}
+#exportBtn{background:linear-gradient(135deg,#0058a3,#004585);color:#fff;border:0}
+#markSentBtn{background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee}
+.pempty{color:var(--muted);font-weight:700;text-align:center;padding:26px 12px;background:rgba(255,255,255,.88);border:1.5px dashed #bcd6ee;border-radius:14px;line-height:1.5}
+.pcard{display:flex;gap:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-left:5px solid var(--brand);border-radius:14px;padding:10px;margin-bottom:10px;align-items:center;box-shadow:0 2px 8px rgba(0,69,133,.06)}
+.pcard .pimg{width:76px;height:76px;object-fit:cover;border-radius:10px;flex:0 0 auto;cursor:pointer;background:#e8edf2}
+.pcard .pmeta{flex:1;min-width:0}
+.pcard .proom{font-weight:900;color:var(--brand2)}
+.pcard .pser{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.72rem;color:var(--muted)}
+.pcard .pload{font-weight:700;font-size:.95rem}
+.pcard .pcrew{color:var(--muted);font-size:.88rem;font-weight:600}
+.pcard .pdel{flex:0 0 auto;background:#fff;color:#b3261e;border:1.5px solid #e3b6b2;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+#photoView{position:fixed;inset:0;background:#000;z-index:300;display:flex;flex-direction:column}
+#photoView.hidden{display:none}
+#photoView img{flex:1;width:100%;object-fit:contain;min-height:0}
+#pvClose{background:#fff;color:#111;border:0;font-weight:800;font-size:1.05rem;padding:14px;cursor:pointer}
+/* ——— Top instructions (Sanjay 2026-11-23) ——— */
+.rules{border:2px solid var(--brand);background:rgba(255,255,255,.92)}
+.rules .st{font-size:1.3rem}
+.gang{display:flex;flex-direction:column;gap:8px;margin:10px 0 12px}
+.gangrow{display:flex;align-items:center;gap:12px;background:#eef5fc;border:1.5px solid #bcd6ee;border-radius:12px;padding:10px 12px;font-weight:800;color:var(--brand2)}
+.gangrow .gn{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;font-weight:900;font-size:1.15rem;display:flex;align-items:center;justify-content:center}
+.gangrow .gt small{display:block;font-weight:700;color:var(--muted);font-size:.88rem}
+.gangrow.noload .gn{background:var(--muted)}
+.gangrow.fan .gn{background:var(--ink)}
+.sensorrow{display:flex;align-items:center;gap:12px;background:#eef7ee;border:1.5px solid #bfe0bf;border-radius:12px;padding:10px 12px;font-weight:800;color:#205c2a;margin-top:8px}
+.sensorrow .sbadge{flex:0 0 auto;background:var(--ok);color:#fff;font-weight:900;font-size:.78rem;letter-spacing:.08em;border-radius:6px;padding:4px 8px}
+/* ——— Progress map (Sanjay 2026-11-23) ——— */
+.pmap{background:rgba(255,255,255,.92);border:2px solid var(--brand);border-radius:14px;padding:12px;margin-bottom:14px}
+.pmap .st{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.3rem;letter-spacing:.03em;color:var(--brand2)}
+.pmap .legend{color:var(--muted);font-weight:600;font-size:.9rem;margin:2px 0 4px}
+.pmap .floorname{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.1rem;letter-spacing:.08em;color:#fff;background:var(--brand2);border-radius:8px;padding:5px 10px;margin:12px 0 8px;text-transform:uppercase}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pmtile{position:relative;border:1.5px solid #bcd6ee;border-radius:10px;padding:8px 6px 7px;min-height:64px;cursor:pointer;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:var(--brand2);overflow:hidden;-webkit-tap-highlight-color:transparent}
+.pmtile:active{transform:scale(.97)}
+.pmtile .pmname{font-weight:900;font-size:.78rem;line-height:1.15;text-transform:uppercase;position:relative}
+.pmtile .pmcount{font-weight:700;font-size:.75rem;color:var(--muted);position:relative}
+.pmtile.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.pmtile.done .pmcount{color:#dff3e4}
+.pmtile .pmdone{position:relative;font-weight:900;font-size:.72rem;letter-spacing:.12em;color:#dff3e4}
+.pmap .pmun{color:var(--muted);font-weight:600;font-size:.88rem;margin-top:10px}
+/* ——— Photo sheet + toast (smooth capture flow) ——— */
+#sheetWrap{position:fixed;inset:0;z-index:250;background:rgba(10,30,50,.55);display:flex;align-items:flex-end;justify-content:center}
+#sheetWrap.hidden{display:none}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -6px 30px rgba(0,0,0,.25)}
+.sheet .sroom{font-family:"Barlow Semi Condensed",sans-serif;font-weight:700;font-size:1.7rem;letter-spacing:.03em;color:var(--brand2);text-transform:uppercase;line-height:1.1}
+.sheet .sload{font-weight:800;font-size:1.1rem;margin-top:2px}
+.sheet .smeta{color:var(--muted);font-weight:600;font-size:.92rem;margin-top:2px}
+.sheet .shint{font-weight:600;color:var(--muted);margin:12px 0 0;line-height:1.45}
+.sheet label{display:block;font-weight:800;color:var(--brand2);font-size:.95rem;margin:14px 0 6px}
+.sheet input{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
+.sheet input.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
+#sheetTake{display:block;width:100%;margin-top:16px;background:linear-gradient(135deg,#0058a3,#004585);color:#fff;font-weight:800;font-size:1.15rem;border:0;border-radius:12px;padding:16px;cursor:pointer}
+#sheetTake:active{transform:scale(.98)}
+#sheetCancel{display:block;width:100%;margin-top:8px;background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee;font-weight:800;font-size:1rem;border-radius:12px;padding:12px;cursor:pointer}
+#toast{position:fixed;left:50%;transform:translate(-50%,20px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:280;background:#16324a;color:#fff;font-weight:700;font-size:1rem;border-radius:999px;padding:13px 20px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
 </style></head><body>
 <div class="jobbar"><span class="jb-brand"><img src="/sharmatrack-mrcela/sharmatrack-app-icon.png" alt="">SHARMATRACK</span><span class="jb-addr">9700 Blandford Rd · Orlando, FL</span></div>
-<div class="subbar"><a href="/sharmatrack-mrcela/blandford/">&larr; 9700 Blandford</a><button type="button" onclick="location.replace(location.pathname + '?t=' + Date.now())">&#8635; Refresh</button></div>
+<div class="subbar"><a href="/sharmatrack-mrcela/blandford/">&larr; 9700 Blandford</a><button type="button" id="pendingBtn">Pending uploads<span class="pbadge" id="pendingCount">0</span></button><button type="button" onclick="location.replace(location.pathname + '?t=' + Date.now())">&#8635; Refresh</button></div>
 <div class="wrap">
   <div class="duo"><span class="duo-card"><img class="duo-sharma" src="/sharmatrack-mrcela/logo.png" alt="Sharma Electric &amp; HVAC"></span><span class="duo-card mrcela"><img class="duo-mrcela" src="/sharmatrack-mrcela/mrcela-logo.png" alt="MRCELA Custom Homes"></span></div>
   <div class="clubrow"><img src="/sharmatrack-mrcela/blandford/lakenona-logo.png" alt="Lake Nona Golf &amp; Country Club"></div>
   <div class="hero"><img class="tracker-logo" src="/sharmatrack-mrcela/blandford/crestron-tracker-banner.png" alt="Crestron Smart Switch Tracker"><span class="trade">ELECTRICAL</span><h1>Smart Switches</h1><div class="sub">9700 Blandford Rd · Orlando, FL · MRCELA Custom Homes<br>Crestron Horizon dimmers &amp; keypads — tracked by serial number</div></div>
+  <div class="pmap" id="progressMap">
+    <div class="st">Progress map · Electrical</div>
+    <div class="legend">Rooms fill green as their switches are verified. Solid green = room done. Tap a room to jump to its switches.</div>
+    <div id="pmapBody"></div>
+  </div>
+  <div class="rules">
+    <div class="st">Read first — how this house goes · Electrical</div>
+    <div style="font-weight:800;color:var(--brand2);margin-top:8px">Bedroom 3-gang switch boxes — always in this order:</div>
+    <div class="gang">
+      <div class="gangrow"><span class="gn">1</span><span class="gt">Crestron dimmer<small>For the lights</small></span></div>
+      <div class="gangrow noload"><span class="gn">2</span><span class="gt">Crestron dimmer — NO LOAD<small>Nothing connected to it</small></span></div>
+      <div class="gangrow fan"><span class="gn">3</span><span class="gt">Regular switch<small>For the fan — never a Crestron dimmer on a fan</small></span></div>
+    </div>
+    <div class="sensorrow"><span class="sbadge">MOTION SENSOR</span><span>Bathroom LED mirrors</span></div>
+    <div class="sensorrow"><span class="sbadge">MOTION SENSOR</span><span>All closet lights</span></div>
+    <div class="sensorrow"><span class="sbadge">MOTION SENSOR</span><span>Laundries</span></div>
+    <div style="font-weight:700;color:var(--muted);margin-top:8px">Motion sensors wired <b>in parallel</b> — with more than one sensor, any one of them turns the light on.</div>
+  </div>
   <div class="counts">
     <div class="count"><div class="n" id="c-inst">0/69</div><div class="l">Installed</div></div>
     <div class="count"><div class="n" id="c-prog">0/69</div><div class="l">Programmed</div></div>
@@ -130,14 +231,10 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     <button type="button" class="scanbtn" id="scanBtn">Scan serial number</button>
     <div class="or">— or type the serial —</div>
     <input id="scanInput" type="text" autocomplete="off" placeholder="Serial, e.g. 2624CRO05984">
+    <div class="crewrow"><label for="crewName">Your name — stamps the photos you take</label><input id="crewName" type="text" autocomplete="name" placeholder="e.g. Mike"></div>
+    <div id="photoMsg"></div>
     <div class="matchcard" id="matchCard"></div>
     <div class="nomatch" id="noMatch"></div>
-  </div>
-  <div class="rules">
-    <div class="st">Field rules — this house (Sanjay)</div>
-    <div>• All fans: <b>REGULAR</b> switch — never a Crestron dimmer</div>
-    <div>• Laundries &amp; closets: <b>MOTION SENSOR</b></div>
-    <div>• A <b>3-gang</b> box gets <b>2 Crestron + 1 Decora</b> — the Decora takes the fan</div>
   </div>
   <div class="controls">
     <input id="q" type="search" autocomplete="off" placeholder="Search serial, room, or load…">
@@ -230,6 +327,7 @@ try { FIELD = JSON.parse(localStorage.getItem(KEY + ":field") || "[]"); } catch 
 function saveField(){ try { localStorage.setItem(KEY + ":field", JSON.stringify(FIELD)); } catch (e) {} }
 function allDevices(){ return DEVICES.concat(FIELD); }
 function devId(d){ return d.id || d.serial; }
+var PHOTOMAP = {}; /* deviceId -> {count, url} for pending serial photos; filled by the photo script at the end of the page */
 var ROOMVIZ = {
   "FOYER": {img: "foyer.jpg", plan: "FOYER · E1.1 · 1st floor"},
   "GUEST ROOM 5 (2ND MASTER)": {img: "guest-room-5.jpg", plan: "BEDROOM 5 · E1.2 · 2nd floor"},
@@ -292,6 +390,40 @@ function counts(){
   document.getElementById("c-ver").textContent = ver + "/" + DEVICES.length;
 }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+/* Progress map — rooms fill green as their switches are verified */
+var FLOORS = [
+  {name: "1st floor", rooms: [["GARAGE","Garage"],["MUD ROOM","Mud Room"],["KITCHEN BY MUD ROOM","Kitchen by Mud"],["BUTLER PANTRY","Butler Pantry"],["FOYER","Foyer"],["LIVING ROOM","Living Room"],["KITCHEN ISLAND?","Kitchen Island"],["DINING ROOM","Dining Room"],["BOTTOM OF STAIRS","Bottom of Stairs"],["OFFICE","Office"],["SUMMER KITCHEN","Summer Kitchen"],["SUMMER KITCHEN GRILLE","Summer K. Grille"],["MASTER BEDROOM","Master Bedroom"],["MASTER BEDROOM BEDSIDE","Master Bedside"],["MASTER BEDROOM BY SLIDER","Master by Slider"],["MASTER ENTRY","Master Entry"],["MASTER BATH ENTRY","Master Bath Entry"],["MASTER BATH LEFT VANITY","M. Bath L Vanity"],["MASTER BATH RIGHT VANITY","M. Bath R Vanity"],["MASTER BATH SHOWER","Master Bath Shower"]]},
+  {name: "2nd floor", rooms: [["TOP OF STAIRS","Top of Stairs"],["GUEST ROOM 2","Guest Room 2"],["OUTSIDE OF GUEST ROOM 2","Outside Guest 2"],["GUEST ROOM 3","Guest Room 3"],["GUEST ROOM 4","Guest Room 4"],["GUEST ROOM 5 (2ND MASTER)","Guest Room 5"],["GUEST ROOM 5 BATHROOM","Guest 5 Bathroom"]]}
+];
+function renderMap(){
+  var body = document.getElementById("pmapBody");
+  if (!body) return;
+  var totals = {}, vers = {};
+  allDevices().forEach(function(d){
+    var r = d.room || "";
+    if (!r) return;
+    totals[r] = (totals[r] || 0) + 1;
+    if (stageOf(devId(d)) >= 3) vers[r] = (vers[r] || 0) + 1;
+  });
+  var out = "";
+  FLOORS.forEach(function(f){
+    out += '<div class="floorname">' + esc(f.name) + '</div><div class="pgrid">';
+    f.rooms.forEach(function(pair){
+      var room = pair[0], label = pair[1];
+      var total = totals[room] || 0, ver = vers[room] || 0;
+      if (!total) return;
+      var done = ver >= total;
+      var pct = Math.round(100 * ver / total);
+      var style = done ? "" : ' style="background:linear-gradient(to top, rgba(28,124,67,.38) ' + pct + '%, rgba(238,245,252,.9) ' + pct + '%)"';
+      out += '<div class="pmtile' + (done ? " done" : "") + '" data-maproom="' + esc(room) + '"' + style + '><span class="pmname">' + esc(label) + '</span><span class="pmcount">' + ver + '/' + total + ' verified</span>' + (done ? '<span class="pmdone">DONE</span>' : '') + '</div>';
+    });
+    out += '</div>';
+  });
+  var un = 0;
+  allDevices().forEach(function(d){ if (!d.room) un++; });
+  if (un) out += '<div class="pmun">' + un + ' switches have no room on the sheet yet — they are in the list below under NO ROOM ON SHEET.</div>';
+  body.innerHTML = out;
+}
 function render(){
   var q = (document.getElementById("q").value || "").toLowerCase();
   var roomSel = document.getElementById("roomSel").value;
@@ -300,7 +432,7 @@ function render(){
   allDevices().forEach(function(d){
     var room = d.room || "NO ROOM ON SHEET";
     if (roomSel && room !== roomSel) return;
-    if (todo && stageOf(d.serial) >= 3) return;
+    if (todo && stageOf(devId(d)) >= 3) return;
     if (q && (d.serial + " " + d.room + " " + d.load + " " + d.model).toLowerCase().indexOf(q) < 0) return;
     if (!groups[room]) { groups[room] = []; order.push(room); }
     groups[room].push(d);
@@ -319,10 +451,19 @@ function render(){
     }
     groups[room].forEach(function(d){
       var s = stageOf(devId(d));
-      out += '<div class="dev" id="dev-' + esc(devId(d)) + '"><span class="serial">' + esc(d.serial || (d.model === "DECORA" ? "NO SERIAL — DECORA" : "SN — NOT YET CAPTURED")) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
+      var did = devId(d);
+      var pm = PHOTOMAP[did];
+      var pbox;
+      if (pm && pm.count > 0) {
+        pbox = '<button type="button" class="photobox has" data-photo="' + esc(did) + '" aria-label="Add another photo of this switch\'s serial label"><img class="pbthumb" src="' + pm.url + '" alt=""><span class="pbcount">' + pm.count + '</span></button>';
+      } else {
+        pbox = '<button type="button" class="photobox" data-photo="' + esc(did) + '" aria-label="Add a photo of this switch\'s serial label"><span class="pbplus">+</span><span class="pblabel">PHOTO</span></button>';
+      }
+      out += '<div class="dev" id="dev-' + esc(did) + '"><div class="devtop"><div class="devmain"><span class="serial">' + esc(d.serial || (d.model === "DECORA" ? "NO SERIAL — DECORA" : "SN — NOT YET CAPTURED")) + '</span><span class="model">' + esc(shortModel(d.model)) + ' · ' + esc(d.model) + '</span>';
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
-      if (FIELDNOTES[devId(d)]) out += '<div class="fieldnote">' + esc(FIELDNOTES[devId(d)]) + '</div>';
-      out += '<div class="seg" data-serial="' + esc(devId(d)) + '">';
+      if (FIELDNOTES[did]) out += '<div class="fieldnote">' + esc(FIELDNOTES[did]) + '</div>';
+      out += '</div>' + pbox + '</div>';
+      out += '<div class="seg" data-serial="' + esc(did) + '">';
       STAGES.forEach(function(label, i){
         out += '<button type="button" data-stage="' + i + '"' + (s===i ? ' class="on' + (i===3?' done':'') + '"' : '') + '>' + label + '</button>';
       });
@@ -331,7 +472,20 @@ function render(){
   });
   document.getElementById("list").innerHTML = out || '<p style="color:var(--muted);font-weight:700">No switches match.</p>';
   counts();
+  renderMap();
 }
+document.getElementById("pmapBody").addEventListener("click", function(e){
+  var t = e.target.closest(".pmtile");
+  if (!t) return;
+  var room = t.getAttribute("data-maproom");
+  var sel = document.getElementById("roomSel");
+  if (sel) sel.value = room;
+  document.getElementById("q").value = "";
+  document.getElementById("todoOnly").checked = false;
+  render();
+  var h = document.querySelector("h2.room");
+  if (h) h.scrollIntoView({block: "start"});
+});
 document.getElementById("list").addEventListener("click", function(e){
   var vb = e.target.closest(".vizbtn");
   if (vb) { var nx = vb.nextElementSibling; if (nx) nx.classList.toggle("hidden"); return; }
@@ -355,6 +509,30 @@ document.getElementById("todoOnly").addEventListener("change", render);
 })();
 </script>
 <div id="camwrap"><div id="camhint">Point the camera at the serial barcode on the device or box</div><video id="camvideo" playsinline muted></video><div class="cambar"><button type="button" id="camclose">Cancel</button></div></div>
+<div id="pendingPage" class="hidden">
+  <div class="pbar"><button type="button" id="pendingBack">&larr; Back</button><div class="ptitle">Pending uploads<span id="pendingTitleCount"></span></div></div>
+  <div class="pwrap">
+    <p class="pnote">Saved on this phone until you send them to the office. These photos live only on this device — send them, then tap &ldquo;Mark all sent&rdquo; to clear the list.</p>
+    <p class="pnote warn hidden" id="pendingDbNote">This device could not open photo storage, so photos can&rsquo;t be saved on it. Let the office know.</p>
+    <div class="pactions"><button type="button" id="exportBtn">Send / export photos</button><button type="button" id="markSentBtn">Mark all sent</button></div>
+    <div id="pendingEmpty" class="pempty">No pending photos yet.<br>Tap the grey <b>+</b> box on any switch to photograph its serial label.</div>
+    <div id="pendingList"></div>
+  </div>
+</div>
+<div id="photoView" class="hidden"><button type="button" id="pvClose">&#10005; Close</button><img id="pvImg" alt="Serial photo — full size"></div>
+<div id="sheetWrap" class="hidden">
+  <div class="sheet">
+    <div class="sroom" id="sheetRoom"></div>
+    <div class="sload" id="sheetLoad"></div>
+    <div class="smeta" id="sheetMeta"></div>
+    <p class="shint">Take one clear photo of this switch&rsquo;s serial-number label. It saves on this phone under Pending uploads, stamped with your name.</p>
+    <div id="sheetNameRow"><label for="sheetName">Your name — one time, saved on this phone</label><input id="sheetName" type="text" autocomplete="name" placeholder="e.g. Roberto"></div>
+    <button type="button" id="sheetTake">Take photo</button>
+    <button type="button" id="sheetCancel">Cancel</button>
+  </div>
+</div>
+<div id="toast" role="status"></div>
+<input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
 <script>
 /* ---------- Serial scan-to-install ---------- */
 function normSerial(s){ return String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
@@ -464,5 +642,309 @@ document.getElementById("scanBtn").addEventListener("click", function(){
     }, 350);
   }).catch(function(){ scanInput.focus(); });
 });
+</script>
+<script>
+/* ---------- Crew serial photos → Pending uploads (IndexedDB) ---------- */
+var CREWKEY = KEY + ":crew";
+var crewInput = document.getElementById("crewName");
+try { crewInput.value = localStorage.getItem(CREWKEY) || ""; } catch (e) {}
+crewInput.addEventListener("input", function(){
+  try { localStorage.setItem(CREWKEY, crewInput.value); } catch (e) {}
+  crewInput.classList.remove("needname");
+});
+function crewNameVal(){ return (crewInput.value || "").trim(); }
+function photoMsg(msg, isErr){
+  var el = document.getElementById("photoMsg");
+  el.textContent = msg;
+  el.classList.add("show");
+  el.classList.toggle("err", !!isErr);
+}
+/* IndexedDB: db "blandford-switches", store "pendingPhotos" (keyPath "id") */
+var photoDBPromise = null, photoDBErr = false;
+function openPhotoDB(){
+  if (photoDBPromise) return photoDBPromise;
+  photoDBPromise = new Promise(function(resolve){
+    if (!("indexedDB" in window)) { photoDBErr = true; resolve(null); return; }
+    var req;
+    try { req = indexedDB.open("blandford-switches", 1); }
+    catch (e) { photoDBErr = true; resolve(null); return; }
+    req.onupgradeneeded = function(){
+      var db = req.result;
+      if (!db.objectStoreNames.contains("pendingPhotos")) db.createObjectStore("pendingPhotos", {keyPath: "id"});
+    };
+    req.onsuccess = function(){ resolve(req.result); };
+    req.onerror = function(){ photoDBErr = true; resolve(null); };
+    req.onblocked = function(){ photoDBErr = true; resolve(null); };
+  });
+  return photoDBPromise;
+}
+function idbReq(req){ return new Promise(function(res, rej){ req.onsuccess = function(){ res(req.result); }; req.onerror = function(){ rej(req.error); }; }); }
+function idbAll(){ return openPhotoDB().then(function(db){ if (!db) return []; return idbReq(db.transaction("pendingPhotos", "readonly").objectStore("pendingPhotos").getAll()); }); }
+function idbPut(rec){ return openPhotoDB().then(function(db){ if (!db) throw new Error("nodb"); return idbReq(db.transaction("pendingPhotos", "readwrite").objectStore("pendingPhotos").put(rec)); }); }
+function idbDel(id){ return openPhotoDB().then(function(db){ if (!db) throw new Error("nodb"); return idbReq(db.transaction("pendingPhotos", "readwrite").objectStore("pendingPhotos").delete(id)); }); }
+function idbClearAll(){ return openPhotoDB().then(function(db){ if (!db) throw new Error("nodb"); return idbReq(db.transaction("pendingPhotos", "readwrite").objectStore("pendingPhotos").clear()); }); }
+/* In-memory mirror of the pending queue */
+var PENDING = [];
+function recURL(rec){ if (!rec._url) rec._url = URL.createObjectURL(rec.imageBlob); return rec._url; }
+function rebuildPhotoMap(){
+  PHOTOMAP = {};
+  PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; }).forEach(function(rec){
+    var cur = PHOTOMAP[rec.deviceId] || {count: 0, url: ""};
+    cur.count++;
+    cur.url = recURL(rec);
+    PHOTOMAP[rec.deviceId] = cur;
+  });
+}
+function updateBadge(){
+  document.getElementById("pendingCount").textContent = PENDING.length;
+  document.getElementById("pendingTitleCount").textContent = PENDING.length ? " (" + PENDING.length + ")" : "";
+}
+function refreshPhotos(){
+  return idbAll().then(function(rows){
+    PENDING = rows || [];
+    rebuildPhotoMap();
+    updateBadge();
+    render();
+    renderPending();
+  }).catch(function(){ photoDBErr = true; renderPending(); });
+}
+/* Capture: downscale to max 1280px, JPEG ~0.82 */
+function processPhoto(file){
+  return new Promise(function(resolve, reject){
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function(){
+      try {
+        var max = 1280, w = img.naturalWidth, h = img.naturalHeight;
+        var scale = Math.min(1, max / Math.max(w, h));
+        var cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(w * scale));
+        cv.height = Math.max(1, Math.round(h * scale));
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function(b){ if (b) resolve(b); else reject(new Error("blob")); }, "image/jpeg", 0.82);
+      } catch (e) { reject(e); }
+    };
+    img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("img")); };
+    img.src = url;
+  });
+}
+var photoTarget = null;
+var fileInput = document.getElementById("photoInput");
+/* Toast — confirms a save right where the crew member is looking */
+var toastTimer = null;
+function showToast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3200);
+}
+/* Photo sheet — one tap on + confirms the exact switch, then one tap opens the camera */
+var sheetDev = null;
+var sheetWrap = document.getElementById("sheetWrap");
+var sheetName = document.getElementById("sheetName");
+function openSheet(dev){
+  sheetDev = dev;
+  document.getElementById("sheetRoom").textContent = dev.room || "No room logged";
+  document.getElementById("sheetLoad").textContent = dev.load || "Load not logged";
+  document.getElementById("sheetMeta").textContent = shortModel(dev.model) + " · " + (dev.serial || "Serial not yet captured");
+  var hasName = !!crewNameVal();
+  document.getElementById("sheetNameRow").style.display = hasName ? "none" : "";
+  sheetName.value = crewNameVal();
+  sheetName.classList.remove("needname");
+  sheetWrap.classList.remove("hidden");
+}
+function closeSheet(){ sheetWrap.classList.add("hidden"); sheetDev = null; }
+document.getElementById("sheetCancel").addEventListener("click", closeSheet);
+sheetWrap.addEventListener("click", function(e){ if (e.target === sheetWrap) closeSheet(); });
+document.getElementById("sheetTake").addEventListener("click", function(){
+  if (!sheetDev) return;
+  if (!crewNameVal()) {
+    var v = (sheetName.value || "").trim();
+    if (!v) { sheetName.classList.add("needname"); sheetName.focus(); return; }
+    crewInput.value = v;
+    try { localStorage.setItem(CREWKEY, v); } catch (e) {}
+    crewInput.classList.remove("needname");
+  }
+  var dev = sheetDev;
+  closeSheet();
+  photoTarget = dev;
+  fileInput.value = "";
+  fileInput.click();
+});
+document.getElementById("list").addEventListener("click", function(e){
+  var pb = e.target.closest(".photobox");
+  if (!pb) return;
+  var did = pb.getAttribute("data-photo");
+  var dev = null;
+  allDevices().forEach(function(d){ if (devId(d) === did) dev = d; });
+  if (!dev) return;
+  openSheet(dev);
+});
+fileInput.addEventListener("change", function(){
+  var f = fileInput.files && fileInput.files[0];
+  if (!f || !photoTarget) return;
+  var dev = photoTarget;
+  photoTarget = null;
+  processPhoto(f).then(function(blob){
+    var name = crewNameVal() || "Unknown crew";
+    var rec = {
+      id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("p" + Date.now() + "-" + Math.floor(Math.random() * 1e6)),
+      deviceId: devId(dev),
+      serial: dev.serial || "",
+      room: dev.room || "",
+      load: dev.load || "",
+      model: dev.model || "",
+      crewName: name,
+      timestamp: Date.now(),
+      imageBlob: blob,
+      status: "pending"
+    };
+    return idbPut(rec).then(function(){
+      PENDING.push(rec);
+      rebuildPhotoMap();
+      updateBadge();
+      render();
+      renderPending();
+      photoMsg("Photo saved — it's in Pending uploads ✓");
+      showToast("Saved ✓ " + (rec.room || "Switch") + (rec.load ? " · " + rec.load : "") + " — Pending uploads (" + PENDING.length + ")");
+      var el = document.getElementById("dev-" + rec.deviceId);
+      if (el) { el.scrollIntoView({block: "center"}); el.classList.add("flash"); }
+    });
+  }).catch(function(){
+    photoMsg("Sorry — that photo could not be saved on this device.", true);
+    showToast("That photo could not be saved — try again");
+  });
+});
+/* Pending uploads page (hash #pending) */
+var mainWrap = document.querySelector(".wrap");
+var subBar = document.querySelector(".subbar");
+var pendingPage = document.getElementById("pendingPage");
+function showPending(){
+  mainWrap.classList.add("hidden");
+  if (subBar) subBar.classList.add("hidden");
+  pendingPage.classList.remove("hidden");
+  window.scrollTo(0, 0);
+  renderPending();
+}
+function showMain(){
+  pendingPage.classList.add("hidden");
+  mainWrap.classList.remove("hidden");
+  if (subBar) subBar.classList.remove("hidden");
+}
+function routeFromHash(){ if (location.hash === "#pending") showPending(); else showMain(); }
+window.addEventListener("hashchange", routeFromHash);
+document.getElementById("pendingBtn").addEventListener("click", function(){
+  if (location.hash === "#pending") showPending(); else location.hash = "pending";
+});
+document.getElementById("pendingBack").addEventListener("click", function(){
+  if (location.hash === "#pending") { if (history.length > 1) history.back(); else location.hash = ""; }
+  else showMain();
+});
+function fmtTime(ts){
+  var d = new Date(ts);
+  return d.toLocaleDateString() + " · " + d.toLocaleTimeString([], {hour: "numeric", minute: "2-digit"});
+}
+function renderPending(){
+  var list = document.getElementById("pendingList");
+  var empty = document.getElementById("pendingEmpty");
+  document.getElementById("pendingDbNote").classList.toggle("hidden", !photoDBErr);
+  var rows = PENDING.slice().sort(function(a, b){ return b.timestamp - a.timestamp; });
+  if (!rows.length) { list.innerHTML = ""; empty.classList.remove("hidden"); return; }
+  empty.classList.add("hidden");
+  list.innerHTML = rows.map(function(rec){
+    return '<div class="pcard"><img class="pimg" data-view="' + esc(rec.id) + '" src="' + recURL(rec) + '" alt="Serial photo">' +
+      '<div class="pmeta"><div class="proom">' + esc(rec.room || "NO ROOM LOGGED") + '</div>' +
+      '<div class="pser">' + esc(rec.serial || rec.deviceId) + (rec.model ? ' · ' + esc(rec.model) : '') + '</div>' +
+      (rec.load ? '<div class="pload">' + esc(rec.load) + '</div>' : '') +
+      '<div class="pcrew">' + esc(rec.crewName || "Unknown crew") + ' · ' + esc(fmtTime(rec.timestamp)) + '</div></div>' +
+      '<button type="button" class="pdel" data-del="' + esc(rec.id) + '">Delete</button></div>';
+  }).join("");
+}
+document.getElementById("pendingList").addEventListener("click", function(e){
+  var del = e.target.closest("[data-del]");
+  if (del) {
+    var id = del.getAttribute("data-del");
+    if (!confirm("Delete this photo from this phone?")) return;
+    idbDel(id).then(function(){
+      PENDING = PENDING.filter(function(r){
+        if (r.id === id && r._url) URL.revokeObjectURL(r._url);
+        return r.id !== id;
+      });
+      rebuildPhotoMap();
+      updateBadge();
+      render();
+      renderPending();
+    }).catch(function(){ alert("That photo could not be deleted on this device."); });
+    return;
+  }
+  var img = e.target.closest("[data-view]");
+  if (img) {
+    var rec = null;
+    PENDING.forEach(function(r){ if (r.id === img.getAttribute("data-view")) rec = r; });
+    if (rec) {
+      document.getElementById("pvImg").src = recURL(rec);
+      document.getElementById("photoView").classList.remove("hidden");
+    }
+  }
+});
+document.getElementById("pvClose").addEventListener("click", function(){
+  document.getElementById("photoView").classList.add("hidden");
+  document.getElementById("pvImg").removeAttribute("src");
+});
+/* Send / export + mark sent */
+var exportedOnce = false;
+function fileNameFor(rec){
+  var base = ((rec.room || "room") + "-" + (rec.serial || rec.deviceId || "switch")).replace(/[^A-Za-z0-9]+/g, "_");
+  return base + "-" + rec.timestamp + ".jpg";
+}
+function buildManifest(rows){
+  var lines = ["Smart Switch serial photos — 9700 Blandford Rd", "Exported: " + new Date().toLocaleString(), ""];
+  rows.forEach(function(rec, i){
+    lines.push((i + 1) + ". " + fileNameFor(rec) + " — Room: " + (rec.room || "") + " · Serial: " + (rec.serial || rec.deviceId) + " · Load: " + (rec.load || "") + " · Model: " + (rec.model || "") + " · By: " + (rec.crewName || "Unknown crew") + " · " + fmtTime(rec.timestamp));
+  });
+  return lines.join("\n");
+}
+function downloadBlob(blob, name){
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+document.getElementById("exportBtn").addEventListener("click", function(){
+  if (!PENDING.length) { alert("No pending photos to send yet."); return; }
+  var rows = PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; });
+  var files = rows.map(function(rec){ return new File([rec.imageBlob], fileNameFor(rec), {type: "image/jpeg"}); });
+  var manifest = new File([buildManifest(rows)], "switch-photos-manifest.txt", {type: "text/plain"});
+  var all = files.concat([manifest]);
+  if (navigator.canShare && navigator.canShare({files: all})) {
+    navigator.share({files: all, title: "Switch serial photos — 9700 Blandford"}).then(function(){ exportedOnce = true; }).catch(function(){});
+    return;
+  }
+  downloadBlob(new Blob([buildManifest(rows)], {type: "text/plain"}), "switch-photos-manifest.txt");
+  files.forEach(function(f, i){ setTimeout(function(){ downloadBlob(f, f.name); }, 400 * (i + 1)); });
+  exportedOnce = true;
+});
+document.getElementById("markSentBtn").addEventListener("click", function(){
+  if (!PENDING.length) return;
+  var msg = exportedOnce
+    ? "These photos were exported. Clear all " + PENDING.length + " from this phone?"
+    : "You haven't sent these photos yet. Clear all " + PENDING.length + " from this phone anyway?";
+  if (!confirm(msg)) return;
+  idbClearAll().then(function(){
+    PENDING.forEach(function(r){ if (r._url) URL.revokeObjectURL(r._url); });
+    PENDING = [];
+    exportedOnce = false;
+    rebuildPhotoMap();
+    updateBadge();
+    render();
+    renderPending();
+  }).catch(function(){ alert("The list could not be cleared on this device."); });
+});
+refreshPhotos();
+routeFromHash();
 </script>
 </body></html>
