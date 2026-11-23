@@ -33,8 +33,9 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .dev .model{display:inline-block;background:#e8f1fa;color:var(--brand2);border-radius:6px;padding:2px 8px;font-size:.8rem;font-weight:800;margin-left:8px;vertical-align:middle}
 .dev .load{font-weight:700;margin-top:2px}
 .dev .load.missing{color:var(--amber);font-weight:700}
-.seg{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.seg button{flex:1 1 auto;border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:999px;padding:10px 6px;font-weight:800;font-size:.92rem;cursor:pointer;min-width:100px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.seg button{border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:12px;padding:14px 6px;font-weight:800;font-size:1rem;cursor:pointer;min-height:52px;-webkit-tap-highlight-color:transparent}
+.seg button:active{transform:scale(.97)}
 .seg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
 .seg button.on.done{background:var(--ok);border-color:var(--ok)}
 .note{background:#fff8e8;border:1px solid #ecd9a0;border-radius:14px;padding:12px 14px;margin:18px 0;font-size:.98rem}
@@ -124,8 +125,8 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .photobox .pbcount{position:absolute;top:3px;right:3px;background:var(--brand);color:#fff;font-size:.68rem;font-weight:800;border-radius:999px;min-width:19px;height:19px;line-height:19px;text-align:center;padding:0 4px}
 .crewrow{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
 .crewrow label{display:block;font-weight:800;color:var(--brand2);font-size:.95rem;margin-bottom:6px}
-.crewrow input{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
-.crewrow input.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
+.crewrow input,.crewrow select{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
+.crewrow input.needname,.crewrow select.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
 #photoMsg{display:none;margin-top:10px;font-weight:700;color:var(--ok)}
 #photoMsg.show{display:block}
 #photoMsg.err{color:#b3261e}
@@ -180,6 +181,18 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .pmtile.done .pmcount{color:#dff3e4}
 .pmtile .pmdone{position:relative;font-weight:900;font-size:.72rem;letter-spacing:.12em;color:#dff3e4}
 .pmap .pmun{color:var(--muted);font-weight:600;font-size:.88rem;margin-top:10px}
+/* ——— Friendlier field use (Sanjay 2026-11-23) ——— */
+h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,.18)}
+.pmaphead{display:flex;align-items:flex-start;gap:10px}
+.pmaphead .st{flex:1}
+#mapToggle{flex:0 0 auto;border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:999px;padding:9px 16px;font-weight:800;font-size:.95rem;cursor:pointer}
+#mapSummary{font-weight:800;color:var(--brand2);font-size:.98rem;margin-top:2px}
+#crewbar{position:fixed;left:0;right:0;bottom:0;z-index:90;display:flex;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,69,133,.12);backdrop-filter:blur(8px)}
+#crewbar button{flex:1;padding:15px 10px;border-radius:12px;font-weight:800;font-size:1.05rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#crewbar button:active{transform:scale(.98)}
+#cbScan{background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee}
+#cbPending{background:linear-gradient(135deg,#0058a3,#004585);color:#fff;border:0}
+.wrap{padding-bottom:110px}
 /* ——— Photo sheet + toast (smooth capture flow) ——— */
 #sheetWrap{position:fixed;inset:0;z-index:250;background:rgba(10,30,50,.55);display:flex;align-items:flex-end;justify-content:center}
 #sheetWrap.hidden{display:none}
@@ -189,8 +202,8 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .sheet .smeta{color:var(--muted);font-weight:600;font-size:.92rem;margin-top:2px}
 .sheet .shint{font-weight:600;color:var(--muted);margin:12px 0 0;line-height:1.45}
 .sheet label{display:block;font-weight:800;color:var(--brand2);font-size:.95rem;margin:14px 0 6px}
-.sheet input{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
-.sheet input.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
+.sheet input,.sheet select{font-size:1.05rem;padding:12px;border:1.5px solid #bcd6ee;border-radius:10px;width:100%;color:var(--ink);background:#fff}
+.sheet input.needname,.sheet select.needname{border-color:var(--amber);background:#fff8e8;box-shadow:0 0 0 3px rgba(185,122,12,.35)}
 #sheetTake{display:block;width:100%;margin-top:16px;background:linear-gradient(135deg,#0058a3,#004585);color:#fff;font-weight:800;font-size:1.15rem;border:0;border-radius:12px;padding:16px;cursor:pointer}
 #sheetTake:active{transform:scale(.98)}
 #sheetCancel{display:block;width:100%;margin-top:8px;background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee;font-weight:800;font-size:1rem;border-radius:12px;padding:12px;cursor:pointer}
@@ -204,9 +217,11 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   <div class="clubrow"><img src="/sharmatrack-mrcela/blandford/lakenona-logo.png" alt="Lake Nona Golf &amp; Country Club"></div>
   <div class="hero"><img class="tracker-logo" src="/sharmatrack-mrcela/blandford/crestron-tracker-banner.png" alt="Crestron Smart Switch Tracker"><span class="trade">ELECTRICAL</span><h1>Smart Switches</h1><div class="sub">9700 Blandford Rd · Orlando, FL · MRCELA Custom Homes<br>Crestron Horizon dimmers &amp; keypads — tracked by serial number</div></div>
   <div class="pmap" id="progressMap">
-    <div class="st">Progress map · Electrical</div>
-    <div class="legend">Rooms fill green as their switches are verified. Solid green = room done. Tap a room to jump to its switches.</div>
-    <div id="pmapBody"></div>
+    <div class="pmaphead"><div style="flex:1;min-width:0"><div class="st">Progress map · Electrical</div><div id="mapSummary">Loading…</div></div><button type="button" id="mapToggle">Hide</button></div>
+    <div id="pmapFold">
+      <div class="legend">Rooms fill green as their switches are verified. Solid green = room done. Tap a room to jump to its switches.</div>
+      <div id="pmapBody"></div>
+    </div>
   </div>
   <div class="rules">
     <div class="st">Read first — how this house goes · Electrical</div>
@@ -231,7 +246,7 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
     <button type="button" class="scanbtn" id="scanBtn">Scan serial number</button>
     <div class="or">— or type the serial —</div>
     <input id="scanInput" type="text" autocomplete="off" placeholder="Serial, e.g. 2624CRO05984">
-    <div class="crewrow"><label for="crewName">Your name — stamps the photos you take</label><input id="crewName" type="text" autocomplete="name" placeholder="e.g. Mike"></div>
+    <div class="crewrow"><label for="crewName">Your name — stamps the photos you take</label><select id="crewName"><option value="">Select your name</option><option value="Sanjay Sharma">Sanjay Sharma</option><option value="Roberto Jones">Roberto Jones</option></select></div>
     <div id="photoMsg"></div>
     <div class="matchcard" id="matchCard"></div>
     <div class="nomatch" id="noMatch"></div>
@@ -245,6 +260,7 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
   <div class="note" id="fanNote"></div>
   <div class="foot">Sharma Electric &amp; HVAC · Lic. EC13013924 · Status is saved on this device.</div>
   <div class="st-footer"><img src="/sharmatrack-mrcela/sharmatrack-logo-blue-on-white.png" alt="SHARMATRACK"><div class="st-tag">JOB TRACKER</div><div class="dev-credit">Developed by Sanjay Sharma</div></div>
+  <div id="crewbar"><button type="button" id="cbScan">Scan serial</button><button type="button" id="cbPending">Pending uploads<span class="pbadge" id="pendingCount2">0</span></button></div>
 </div>
 <script>
 var DEVICES = [
@@ -423,6 +439,13 @@ function renderMap(){
   allDevices().forEach(function(d){ if (!d.room) un++; });
   if (un) out += '<div class="pmun">' + un + ' switches have no room on the sheet yet — they are in the list below under NO ROOM ON SHEET.</div>';
   body.innerHTML = out;
+  var sum = document.getElementById("mapSummary");
+  if (sum) {
+    var tiles = body.querySelectorAll(".pmtile"), doneTiles = body.querySelectorAll(".pmtile.done");
+    var tv = 0, tt = 0;
+    allDevices().forEach(function(d){ tt++; if (stageOf(devId(d)) >= 3) tv++; });
+    sum.textContent = doneTiles.length + " of " + tiles.length + " rooms done · " + tv + "/" + tt + " switches verified";
+  }
 }
 function render(){
   var q = (document.getElementById("q").value || "").toLowerCase();
@@ -526,7 +549,7 @@ document.getElementById("todoOnly").addEventListener("change", render);
     <div class="sload" id="sheetLoad"></div>
     <div class="smeta" id="sheetMeta"></div>
     <p class="shint">Take one clear photo of this switch&rsquo;s serial-number label. It saves on this phone under Pending uploads, stamped with your name.</p>
-    <div id="sheetNameRow"><label for="sheetName">Your name — one time, saved on this phone</label><input id="sheetName" type="text" autocomplete="name" placeholder="e.g. Roberto"></div>
+    <div id="sheetNameRow"><label for="sheetName">Your name — one time, saved on this phone</label><select id="sheetName"><option value="">Select your name</option><option value="Sanjay Sharma">Sanjay Sharma</option><option value="Roberto Jones">Roberto Jones</option></select></div>
     <button type="button" id="sheetTake">Take photo</button>
     <button type="button" id="sheetCancel">Cancel</button>
   </div>
@@ -648,10 +671,12 @@ document.getElementById("scanBtn").addEventListener("click", function(){
 var CREWKEY = KEY + ":crew";
 var crewInput = document.getElementById("crewName");
 try { crewInput.value = localStorage.getItem(CREWKEY) || ""; } catch (e) {}
-crewInput.addEventListener("input", function(){
+function saveCrewName(){
   try { localStorage.setItem(CREWKEY, crewInput.value); } catch (e) {}
   crewInput.classList.remove("needname");
-});
+}
+crewInput.addEventListener("input", saveCrewName);
+crewInput.addEventListener("change", saveCrewName);
 function crewNameVal(){ return (crewInput.value || "").trim(); }
 function photoMsg(msg, isErr){
   var el = document.getElementById("photoMsg");
@@ -697,6 +722,8 @@ function rebuildPhotoMap(){
 }
 function updateBadge(){
   document.getElementById("pendingCount").textContent = PENDING.length;
+  var b2 = document.getElementById("pendingCount2");
+  if (b2) b2.textContent = PENDING.length;
   document.getElementById("pendingTitleCount").textContent = PENDING.length ? " (" + PENDING.length + ")" : "";
 }
 function refreshPhotos(){
@@ -944,6 +971,30 @@ document.getElementById("markSentBtn").addEventListener("click", function(){
     renderPending();
   }).catch(function(){ alert("The list could not be cleared on this device."); });
 });
+/* Crew bar — Scan + Pending always in thumb reach */
+document.getElementById("cbScan").addEventListener("click", function(){
+  document.getElementById("scanBtn").click();
+});
+document.getElementById("cbPending").addEventListener("click", function(){
+  document.getElementById("pendingBtn").click();
+});
+/* Progress map fold — starts open, remembers the choice on this phone */
+(function(){
+  var fold = document.getElementById("pmapFold");
+  var btn = document.getElementById("mapToggle");
+  var open = true;
+  try { open = localStorage.getItem(KEY + ":mapopen") !== "0"; } catch (e) {}
+  function apply(){
+    fold.classList.toggle("hidden", !open);
+    btn.textContent = open ? "Hide" : "Show";
+  }
+  btn.addEventListener("click", function(){
+    open = !open;
+    try { localStorage.setItem(KEY + ":mapopen", open ? "1" : "0"); } catch (e) {}
+    apply();
+  });
+  apply();
+})();
 refreshPhotos();
 routeFromHash();
 </script>
