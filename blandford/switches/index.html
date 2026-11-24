@@ -40,6 +40,27 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .locrow{display:flex;gap:10px;padding:5px 0;align-items:baseline}
 .lock{flex:0 0 104px;font-weight:900;color:var(--brand2);font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
 .locv{font-weight:700;color:var(--brand2)}
+/* ——— Load photos: photo of what the switch controls ——— */
+#loadSheetWrap{position:fixed;inset:0;z-index:250;background:rgba(10,30,50,.55);display:flex;align-items:flex-end;justify-content:center}
+#loadSheetWrap.hidden{display:none}
+.sheet .takeBtn{display:block;width:100%;margin-top:16px;background:linear-gradient(135deg,#0058a3,#004585);color:#fff;font-weight:800;font-size:1.15rem;border:0;border-radius:12px;padding:16px;cursor:pointer}
+.sheet .takeBtn:active{transform:scale(.98)}
+.sheet .cancelBtn{display:block;width:100%;margin-top:8px;background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee;font-weight:800;font-size:1rem;border-radius:12px;padding:12px;cursor:pointer}
+.loadblock{margin-top:10px}
+.loadbtn{display:flex;flex-direction:column;align-items:center;gap:1px;width:100%;background:linear-gradient(135deg,#0a6ebd,#0058a3);color:#fff;border:0;border-radius:12px;padding:14px 12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.loadbtn .lb1{font-weight:900;font-size:1.05rem}
+.loadbtn .lb2{font-weight:700;font-size:.88rem;opacity:.92}
+.loadbtn:active{transform:scale(.99)}
+.lphgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lph{border:1.5px solid #bcd6ee;border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.lph img{width:100%;display:block;aspect-ratio:1;object-fit:cover}
+.lph .lphcap{padding:5px 7px;font-weight:700;color:var(--brand2);background:#eef5fc;font-size:.8rem;line-height:1.3}
+.lph.big{grid-column:1/-1}
+.lph.big img{aspect-ratio:auto;object-fit:contain}
+.lphadd{display:flex;align-items:center;justify-content:center;border:2px dashed #9cc3e8;border-radius:10px;background:#f2f8fd;color:var(--brand2);font-weight:900;font-size:1.6rem;cursor:pointer;min-height:64px}
+.loadnote{color:var(--muted);font-weight:700;font-size:.9rem;padding:2px}
+.pkind{display:inline-block;font-weight:900;font-size:.78rem;letter-spacing:.04em;color:#fff;background:var(--brand2);border-radius:6px;padding:2px 7px;margin-bottom:3px}
+.pkind.load{background:#1e7a34}
 .seg button{border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:12px;padding:14px 6px;font-weight:800;font-size:1rem;cursor:pointer;min-height:52px;-webkit-tap-highlight-color:transparent}
 .seg button:active{transform:scale(.97)}
 .seg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -385,7 +406,25 @@ function gangTextFor(d, did){
   var g = m[0].replace(/\s+/g, " ");
   return g.charAt(0).toUpperCase() + g.slice(1);
 }
+/* Load-photo block on each switch: one big button when the switch controls something,
+   its filed photos once taken, and a plain note when there is nothing to photograph. */
+function loadBlockHTML(d, did){
+  if (!d.load) return '<div class="loadblock"><div class="loadnote">Load not on file — no photo to take for this one yet.</div></div>';
+  if (/no load/i.test(d.load)) return '<div class="loadblock"><div class="loadnote">NO LOAD — this switch controls nothing, so there is nothing to photograph.</div></div>';
+  var lm = (typeof LOADMAP !== "undefined") ? LOADMAP[did] : null;
+  var h = '<div class="loadblock">';
+  if (lm && lm.count > 0) {
+    h += '<div class="lphgrid">';
+    lm.urls.forEach(function(u){ h += '<div class="lph"><img loading="lazy" src="' + u + '" alt=""><div class="lphcap">Controls: ' + esc(d.load) + '</div></div>'; });
+    h += '<button type="button" class="lphadd" data-loadphoto="' + esc(did) + '" aria-label="Take another photo of what this switch controls">+</button>';
+    h += '</div>';
+  } else {
+    h += '<button type="button" class="loadbtn" data-loadphoto="' + esc(did) + '"><span class="lb1">📷 Take a photo of what it controls</span><span class="lb2">Controls: ' + esc(d.load) + '</span></button>';
+  }
+  return h + '</div>';
+}
 var PHOTOMAP = {}; /* deviceId -> {count, url} for pending serial photos; filled by the photo script at the end of the page */
+var LOADMAP = {}; /* deviceId -> {count, urls[]} for pending load photos (what the switch controls); filled by the photo script */
 var ROOMVIZ = {
   "FOYER": {img: "foyer.jpg", plan: "FOYER · E1.1 · 1st floor"},
   "GUEST ROOM 5 (2ND MASTER)": {img: "guest-room-5.jpg", plan: "BEDROOM 5 · E1.2 · 2nd floor"},
@@ -584,7 +623,9 @@ function render(){
       var gang = gangTextFor(d, did);
       if (gang) out += '<div class="locrow"><span class="lock">Box position</span><span class="locv">' + esc(gang) + '</span></div>';
       out += '<div class="locrow"><span class="lock">Controls</span><span class="locv">' + esc(controlsTextFor(d)) + '</span></div>';
-      out += '</div></div>';
+      out += '</div>';
+      out += loadBlockHTML(d, did);
+      out += '</div>';
     });
   });
   document.getElementById("list").innerHTML = out || '<p style="color:var(--muted);font-weight:700">No switches match.</p>';
@@ -664,6 +705,16 @@ document.getElementById("todoOnly").addEventListener("change", render);
     <div id="sheetNameRow"><label for="sheetName">Your name — one time, saved on this phone</label><select id="sheetName"><option value="">Select your name</option><option value="Sanjay Sharma">Sanjay Sharma</option><option value="Roberto Jones">Roberto Jones</option></select></div>
     <button type="button" id="sheetTake">Take photo</button>
     <button type="button" id="sheetCancel">Cancel</button>
+  </div>
+</div>
+<div id="loadSheetWrap" class="hidden">
+  <div class="sheet">
+    <div class="sroom" id="loadSheetRoom"></div>
+    <div class="sload" id="loadSheetControls"></div>
+    <p class="shint" id="loadSheetHint"></p>
+    <div id="loadSheetNameRow"><label for="loadSheetName">Your name — one time, saved on this phone</label><select id="loadSheetName"><option value="">Select your name</option><option value="Sanjay Sharma">Sanjay Sharma</option><option value="Roberto Jones">Roberto Jones</option></select></div>
+    <button type="button" class="takeBtn" id="loadSheetTake">Take photo</button>
+    <button type="button" class="cancelBtn" id="loadSheetCancel">Cancel</button>
   </div>
 </div>
 <div id="toast" role="status"></div>
@@ -825,11 +876,19 @@ var PENDING = [];
 function recURL(rec){ if (!rec._url) rec._url = URL.createObjectURL(rec.imageBlob); return rec._url; }
 function rebuildPhotoMap(){
   PHOTOMAP = {};
+  LOADMAP = {};
   PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; }).forEach(function(rec){
-    var cur = PHOTOMAP[rec.deviceId] || {count: 0, url: ""};
-    cur.count++;
-    cur.url = recURL(rec);
-    PHOTOMAP[rec.deviceId] = cur;
+    if ((rec.kind || "serial") === "load") {
+      var e = LOADMAP[rec.deviceId] || {count: 0, urls: []};
+      e.count++;
+      e.urls.push(recURL(rec));
+      LOADMAP[rec.deviceId] = e;
+    } else {
+      var cur = PHOTOMAP[rec.deviceId] || {count: 0, url: ""};
+      cur.count++;
+      cur.url = recURL(rec);
+      PHOTOMAP[rec.deviceId] = cur;
+    }
   });
 }
 function updateBadge(){
@@ -881,6 +940,63 @@ function processPhoto(file){
     } else legacy();
   });
 }
+/* Watermark for load photos — the Sharma photo stamp, drawn on in the app:
+   ghost logo top-left at full strength + license line under it, and bottom-left
+   white text: address / Builder: MRCELA Custom Homes / photo date.
+   If anything in the stamp fails, the clean photo is saved instead — never lost. */
+var wmLogo = null, wmLogoTried = false;
+function loadWmLogo(){
+  return new Promise(function(resolve){
+    if (wmLogo) { resolve(wmLogo); return; }
+    if (wmLogoTried) { resolve(null); return; }
+    wmLogoTried = true;
+    var img = new Image();
+    img.onload = function(){ wmLogo = img; resolve(img); };
+    img.onerror = function(){ resolve(null); };
+    img.src = "/sharmatrack-mrcela/logo-wm.png";
+  });
+}
+function photoDateText(ts){
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var d = new Date(ts);
+  return months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+}
+function watermarkBlob(blob){
+  return loadWmLogo().then(function(logo){
+    return new Promise(function(resolve){
+      function done(b){ resolve(b || blob); }
+      var url = URL.createObjectURL(blob);
+      var img = new Image();
+      img.onload = function(){
+        try {
+          var w = img.naturalWidth, h = img.naturalHeight;
+          var cv = document.createElement("canvas");
+          cv.width = w; cv.height = h;
+          var cx = cv.getContext("2d");
+          cx.drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(url);
+          var mx = Math.round(w * 0.04);
+          cx.shadowColor = "rgba(0,0,0,.55)";
+          if (logo) {
+            /* The watermark lockup itself carries the license numbers under the logo, per the Sharma stamp. */
+            var lw = Math.round(w * 0.36), lh = Math.round(lw * (logo.naturalHeight / logo.naturalWidth));
+            cx.drawImage(logo, mx, mx, lw, lh);
+          }
+          var lines = ["9700 Blandford Rd, Orlando, FL 32827", "Builder: MRCELA Custom Homes", photoDateText(Date.now())];
+          var fs = Math.max(15, Math.round(w * 0.032));
+          cx.font = "800 " + fs + "px sans-serif";
+          cx.fillStyle = "#fff";
+          cx.shadowBlur = 5; cx.shadowOffsetY = 1;
+          var step = Math.round(fs * 1.32), y = h - mx - step * (lines.length - 1);
+          lines.forEach(function(t){ cx.fillText(t, mx, y); y += step; });
+          cv.toBlob(function(b){ done(b); }, "image/jpeg", 0.85);
+        } catch (e) { done(null); }
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); done(null); };
+      img.src = url;
+    });
+  }).catch(function(){ return blob; });
+}
 var photoTarget = null;
 var fileInput = document.getElementById("photoInput");
 /* Toast — confirms a save right where the crew member is looking */
@@ -910,20 +1026,67 @@ function openSheet(dev){
 function closeSheet(){ sheetWrap.classList.add("hidden"); sheetDev = null; }
 document.getElementById("sheetCancel").addEventListener("click", closeSheet);
 sheetWrap.addEventListener("click", function(e){ if (e.target === sheetWrap) closeSheet(); });
+/* Shared crew-name gate for both photo sheets: true when a name is on file or just picked */
+function sheetCrewOk(sel){
+  if (crewNameVal()) return true;
+  var v = (sel.value || "").trim();
+  if (!v) { sel.classList.add("needname"); sel.focus(); return false; }
+  crewInput.value = v;
+  try { localStorage.setItem(CREWKEY, v); } catch (e) {}
+  crewInput.classList.remove("needname");
+  return true;
+}
 document.getElementById("sheetTake").addEventListener("click", function(){
   if (!sheetDev) return;
-  if (!crewNameVal()) {
-    var v = (sheetName.value || "").trim();
-    if (!v) { sheetName.classList.add("needname"); sheetName.focus(); return; }
-    crewInput.value = v;
-    try { localStorage.setItem(CREWKEY, v); } catch (e) {}
-    crewInput.classList.remove("needname");
-  }
+  if (!sheetCrewOk(sheetName)) return;
   var dev = sheetDev;
   closeSheet();
-  photoTarget = dev;
+  photoTarget = {dev: dev, kind: "serial"};
   fileInput.value = "";
   fileInput.click();
+});
+/* Load sheet — photo of what the switch controls */
+var loadSheetDev = null;
+var loadSheetWrap = document.getElementById("loadSheetWrap");
+var loadSheetName = document.getElementById("loadSheetName");
+function openLoadSheet(dev){
+  loadSheetDev = dev;
+  document.getElementById("loadSheetRoom").textContent = dev.room || "No room logged";
+  document.getElementById("loadSheetControls").textContent = "This switch controls: " + (dev.load || "");
+  document.getElementById("loadSheetHint").textContent = "Take one photo of the " + (dev.load || "load") + " this switch runs. If you can, switch it ON first so it shows in the picture. The photo is stamped with the Sharma watermark and filed under this switch automatically.";
+  var hasName = !!crewNameVal();
+  document.getElementById("loadSheetNameRow").style.display = hasName ? "none" : "";
+  loadSheetName.value = crewNameVal();
+  loadSheetName.classList.remove("needname");
+  loadSheetWrap.classList.remove("hidden");
+}
+function closeLoadSheet(){ loadSheetWrap.classList.add("hidden"); loadSheetDev = null; }
+document.getElementById("loadSheetCancel").addEventListener("click", closeLoadSheet);
+loadSheetWrap.addEventListener("click", function(e){ if (e.target === loadSheetWrap) closeLoadSheet(); });
+document.getElementById("loadSheetTake").addEventListener("click", function(){
+  if (!loadSheetDev) return;
+  if (!sheetCrewOk(loadSheetName)) return;
+  var dev = loadSheetDev;
+  closeLoadSheet();
+  photoTarget = {dev: dev, kind: "load"};
+  fileInput.value = "";
+  fileInput.click();
+});
+document.getElementById("list").addEventListener("click", function(e){
+  var add = e.target.closest("[data-loadphoto]");
+  if (add) {
+    var dev = null;
+    allDevices().forEach(function(d){ if (devId(d) === add.getAttribute("data-loadphoto")) dev = d; });
+    if (dev) openLoadSheet(dev);
+    return;
+  }
+  var lph = e.target.closest(".lph");
+  if (lph) {
+    var wasBig = lph.classList.contains("big");
+    var grid = lph.parentElement;
+    if (grid) grid.querySelectorAll(".lph.big").forEach(function(x){ x.classList.remove("big"); });
+    if (!wasBig) lph.classList.add("big");
+  }
 });
 document.getElementById("list").addEventListener("click", function(e){
   var pb = e.target.closest(".photobox");
@@ -937,14 +1100,16 @@ document.getElementById("list").addEventListener("click", function(e){
 fileInput.addEventListener("change", function(){
   var f = fileInput.files && fileInput.files[0];
   if (!f || !photoTarget) return;
-  var dev = photoTarget;
+  var dev = photoTarget.dev;
+  var kind = photoTarget.kind || "serial";
   photoTarget = null;
-  showToast("Saving photo…"); /* instant feedback — big phone photos take a few seconds to shrink */
+  showToast(kind === "load" ? "Saving photo — stamping & filing it…" : "Saving photo…"); /* instant feedback — big phone photos take a few seconds to shrink */
   function saveWith(blob){
     var name = crewNameVal() || "Unknown crew";
     var rec = {
       id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("p" + Date.now() + "-" + Math.floor(Math.random() * 1e6)),
       deviceId: devId(dev),
+      kind: kind,
       serial: dev.serial || "",
       room: dev.room || "",
       load: dev.load || "",
@@ -960,16 +1125,23 @@ fileInput.addEventListener("change", function(){
       updateBadge();
       render();
       renderPending();
-      photoMsg("Photo saved — it's in Pending uploads ✓");
-      showToast("Saved ✓ " + (rec.room || "Switch") + (rec.load ? " · " + rec.load : "") + " — Pending uploads (" + PENDING.length + ")");
+      if (kind === "load") {
+        photoMsg("Load photo saved — filed under " + (rec.room || "this switch") + " ✓");
+        showToast("Saved ✓ Filed under " + (rec.room || "Switch") + " — controls " + (rec.load || "") + " (" + PENDING.length + " in Pending)");
+      } else {
+        photoMsg("Photo saved — it's in Pending uploads ✓");
+        showToast("Saved ✓ " + (rec.room || "Switch") + (rec.load ? " · " + rec.load : "") + " — Pending uploads (" + PENDING.length + ")");
+      }
       var el = document.getElementById("dev-" + rec.deviceId);
       if (el) { el.scrollIntoView({block: "center"}); el.classList.add("flash"); }
     });
   }
-  processPhoto(f).then(saveWith).catch(function(){
+  var chain = processPhoto(f).catch(function(){
     /* Shrinking failed (unusual phone format) — keep the original file so the photo is never lost. */
-    return saveWith(f);
-  }).catch(function(){
+    return f;
+  });
+  if (kind === "load") chain = chain.then(function(b){ return watermarkBlob(b); });
+  chain.then(saveWith).catch(function(){
     photoMsg("Sorry — that photo could not be saved on this device.", true);
     showToast("That photo could not be saved — try again");
   });
@@ -1011,8 +1183,8 @@ function renderPending(){
   if (!rows.length) { list.innerHTML = ""; empty.classList.remove("hidden"); return; }
   empty.classList.add("hidden");
   list.innerHTML = rows.map(function(rec){
-    return '<div class="pcard"><img class="pimg" data-view="' + esc(rec.id) + '" src="' + recURL(rec) + '" alt="Serial photo">' +
-      '<div class="pmeta"><div class="proom">' + esc(rec.room || "NO ROOM LOGGED") + '</div>' +
+    return '<div class="pcard"><img class="pimg" data-view="' + esc(rec.id) + '" src="' + recURL(rec) + '" alt="Switch photo">' +
+      '<div class="pmeta"><span class="pkind' + ((rec.kind || "serial") === "load" ? " load" : "") + '">' + ((rec.kind || "serial") === "load" ? "LOAD PHOTO" : "SERIAL LABEL") + '</span><div class="proom">' + esc(rec.room || "NO ROOM LOGGED") + '</div>' +
       '<div class="pser">' + esc(rec.serial || rec.deviceId) + (rec.model ? ' · ' + esc(rec.model) : '') + '</div>' +
       (rec.load ? '<div class="pload">' + esc(rec.load) + '</div>' : '') +
       '<div class="pcrew">' + esc(rec.crewName || "Unknown crew") + ' · ' + esc(fmtTime(rec.timestamp)) + '</div></div>' +
@@ -1124,7 +1296,7 @@ function makeZipBlob(entries) {
   });
 }
 function fileNameFor(rec){
-  var base = ((rec.room || "room") + "-" + (rec.serial || rec.deviceId || "switch")).replace(/[^A-Za-z0-9]+/g, "_");
+  var base = ((rec.room || "room") + "-" + ((rec.kind || "serial") === "load" ? "CONTROLS" : "SERIAL") + "-" + (rec.serial || rec.deviceId || "switch")).replace(/[^A-Za-z0-9]+/g, "_");
   var t = (rec.imageBlob && rec.imageBlob.type) || "image/jpeg";
   var ext = t.indexOf("heic") >= 0 ? ".heic" : (t.indexOf("png") >= 0 ? ".png" : ".jpg");
   return base + "-" + rec.timestamp + ext;
@@ -1132,7 +1304,7 @@ function fileNameFor(rec){
 function buildManifest(rows){
   var lines = ["Smart Switch serial photos — 9700 Blandford Rd", "Exported: " + new Date().toLocaleString(), ""];
   rows.forEach(function(rec, i){
-    lines.push((i + 1) + ". " + fileNameFor(rec) + " — Room: " + (rec.room || "") + " · Serial: " + (rec.serial || rec.deviceId) + " · Load: " + (rec.load || "") + " · Model: " + (rec.model || "") + " · By: " + (rec.crewName || "Unknown crew") + " · " + fmtTime(rec.timestamp));
+    lines.push((i + 1) + ". " + fileNameFor(rec) + " — Type: " + ((rec.kind || "serial") === "load" ? "Load photo (what the switch controls)" : "Serial label") + " · Room: " + (rec.room || "") + " · Serial: " + (rec.serial || rec.deviceId) + " · Load: " + (rec.load || "") + " · Model: " + (rec.model || "") + " · By: " + (rec.crewName || "Unknown crew") + " · " + fmtTime(rec.timestamp));
   });
   return lines.join("\n");
 }
@@ -1250,7 +1422,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.6";
+  var BUILD = "2026-11-23.7";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
