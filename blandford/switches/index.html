@@ -19,7 +19,7 @@ body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-s
 .hero{background:linear-gradient(135deg,#0058a3,#004585 70%);border-radius:18px;color:#fff;padding:18px;margin-bottom:14px}
 .hero h1{font-size:1.55rem;margin:0 0 4px;line-height:1.2}
 .hero .sub{color:#cfe0f2;font-size:1rem}
-.counts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.counts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
 .count{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
 .count .n{font-size:1.6rem;font-weight:900;color:var(--brand2)}
 .count .l{color:var(--muted);font-size:.9rem;font-weight:700}
@@ -65,6 +65,11 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .seg button:active{transform:scale(.97)}
 .seg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
 .seg button.on.done{background:var(--ok);border-color:var(--ok)}
+/* Two-state status under each switch caption: NOT STARTED / COMPLETED */
+.statusbtn{display:block;width:100%;margin-top:12px;border-radius:12px;padding:14px;font-weight:900;font-size:1.08rem;cursor:pointer;border:2px solid #bcd6ee;background:#fff;color:var(--brand2);-webkit-tap-highlight-color:transparent}
+.statusbtn small{display:block;font-weight:700;font-size:.82rem;opacity:.85;margin-top:1px}
+.statusbtn.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.statusbtn:active{transform:scale(.99)}
 .note{background:#fff8e8;border:1px solid #ecd9a0;border-radius:14px;padding:12px 14px;margin:18px 0;font-size:.98rem}
 .foot{color:var(--muted);font-size:.9rem;text-align:center;margin-top:24px}
 .hidden{display:none}
@@ -254,7 +259,7 @@ h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,
   <div class="pmap" id="progressMap">
     <div class="pmaphead"><div style="flex:1;min-width:0"><div class="st">Progress map · Electrical</div><div id="mapSummary">Loading…</div></div><button type="button" id="mapToggle">Hide</button></div>
     <div id="pmapFold">
-      <div class="legend">Rooms fill green as their switches are verified. Solid green = room done. Tap a room to jump to its switches.</div>
+      <div class="legend">Rooms fill green as their switches are completed. Solid green = room done. Tap a room to jump to its switches.</div>
       <div id="pmapBody"></div>
     </div>
   </div>
@@ -272,9 +277,8 @@ h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,
     <div style="font-weight:700;color:var(--muted);margin-top:8px">Motion sensors wired <b>in parallel</b> — with more than one sensor, any one of them turns the light on.</div>
   </div>
   <div class="counts">
-    <div class="count"><div class="n" id="c-inst">0/72</div><div class="l">Installed</div></div>
-    <div class="count"><div class="n" id="c-prog">0/72</div><div class="l">Programmed</div></div>
-    <div class="count"><div class="n" id="c-ver">0/72</div><div class="l">Verified</div></div>
+    <div class="count"><div class="n" id="c-ver">0/72</div><div class="l">Completed</div></div>
+    <div class="count"><div class="n" id="c-not">0/72</div><div class="l">Not started</div></div>
   </div>
   <div class="scan">
     <div class="st">Installing a switch? Scan it first</div>
@@ -289,7 +293,7 @@ h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,
   <div class="controls">
     <input id="q" type="search" autocomplete="off" placeholder="Search serial, room, or load…">
     <select id="roomSel"><option value="">All rooms</option></select>
-    <label><input type="checkbox" id="todoOnly"> Show only not verified</label>
+    <label><input type="checkbox" id="todoOnly"> Show only not completed</label>
   </div>
   <div id="list"></div>
   <div class="note" id="fanNote"></div>
@@ -525,11 +529,10 @@ function stageOf(id){
 }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 function counts(){
-  var inst=0, prog=0, ver=0;
-  allDevices().forEach(function(d){ var s=stageOf(devId(d)); if(s>=1)inst++; if(s>=2)prog++; if(s>=3)ver++; });
-  document.getElementById("c-inst").textContent = inst + "/" + DEVICES.length;
-  document.getElementById("c-prog").textContent = prog + "/" + DEVICES.length;
+  var ver=0;
+  allDevices().forEach(function(d){ if(stageOf(devId(d)) >= 3) ver++; });
   document.getElementById("c-ver").textContent = ver + "/" + DEVICES.length;
+  document.getElementById("c-not").textContent = (DEVICES.length - ver) + "/" + DEVICES.length;
 }
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 /* Progress map — rooms fill green as their switches are verified */
@@ -557,7 +560,7 @@ function renderMap(){
       var done = ver >= total;
       var pct = Math.round(100 * ver / total);
       var style = done ? "" : ' style="background:linear-gradient(to top, rgba(28,124,67,.38) ' + pct + '%, rgba(238,245,252,.9) ' + pct + '%)"';
-      out += '<div class="pmtile' + (done ? " done" : "") + '" data-maproom="' + esc(room) + '"' + style + '><span class="pmname">' + esc(label) + '</span><span class="pmcount">' + ver + '/' + total + ' verified</span>' + (done ? '<span class="pmdone">DONE</span>' : '') + '</div>';
+      out += '<div class="pmtile' + (done ? " done" : "") + '" data-maproom="' + esc(room) + '"' + style + '><span class="pmname">' + esc(label) + '</span><span class="pmcount">' + ver + '/' + total + ' completed</span>' + (done ? '<span class="pmdone">DONE</span>' : '') + '</div>';
     });
     out += '</div>';
   });
@@ -570,7 +573,7 @@ function renderMap(){
     var tiles = body.querySelectorAll(".pmtile"), doneTiles = body.querySelectorAll(".pmtile.done");
     var tv = 0, tt = 0;
     allDevices().forEach(function(d){ tt++; if (stageOf(devId(d)) >= 3) tv++; });
-    sum.textContent = doneTiles.length + " of " + tiles.length + " rooms done · " + tv + "/" + tt + " switches verified";
+    sum.textContent = doneTiles.length + " of " + tiles.length + " rooms done · " + tv + "/" + tt + " switches completed";
   }
 }
 function render(){
@@ -612,11 +615,8 @@ function render(){
       out += d.load ? '<div class="load">' + esc(d.load) + '</div>' : '<div class="load missing">Load not on sheet</div>';
       if (FIELDNOTES[did]) out += '<div class="fieldnote">' + esc(FIELDNOTES[did]) + '</div>';
       out += '</div>' + pbox + '</div>';
-      out += '<div class="seg" data-serial="' + esc(did) + '">';
-      STAGES.forEach(function(label, i){
-        out += '<button type="button" data-stage="' + i + '"' + (s===i ? ' class="on' + (i===3?' done':'') + '"' : '') + '>' + label + '</button>';
-      });
-      out += '</div>';
+      var isDone = s >= 3;
+      out += '<button type="button" class="statusbtn' + (isDone ? ' done' : '') + '" data-status="' + esc(did) + '">' + (isDone ? '✓ COMPLETED' : 'NOT STARTED') + '<small>' + (isDone ? 'Tap if it needs redoing' : 'Tap when this switch is done') + '</small></button>';
       out += '<button type="button" class="locbtn" data-loc="' + esc(did) + '">Location &amp; what it controls</button>';
       out += '<div class="locpanel hidden" id="loc-' + esc(did) + '">';
       out += '<div class="locrow"><span class="lock">Located in</span><span class="locv">' + esc(locTextFor(d)) + '</span></div>';
@@ -664,9 +664,9 @@ document.getElementById("list").addEventListener("click", function(e){
     if (!wasBig) phEl.classList.add("big");
     return;
   }
-  var b = e.target.closest("button[data-stage]"); if (!b) return;
-  var serial = b.parentElement.getAttribute("data-serial");
-  state[serial] = parseInt(b.getAttribute("data-stage"), 10);
+  var sb = e.target.closest("button[data-status]"); if (!sb) return;
+  var sid = sb.getAttribute("data-status");
+  state[sid] = stageOf(sid) >= 3 ? 0 : 3;
   save(); render();
 });
 document.getElementById("q").addEventListener("input", render);
@@ -1445,7 +1445,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.8";
+  var BUILD = "2026-11-23.9";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
