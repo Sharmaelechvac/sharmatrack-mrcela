@@ -156,6 +156,10 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .pcard .pload{font-weight:700;font-size:.95rem}
 .pcard .pcrew{color:var(--muted);font-size:.88rem;font-weight:600}
 .pcard .pdel{flex:0 0 auto;background:#fff;color:#b3261e;border:1.5px solid #e3b6b2;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+.pcard .psend{flex:0 0 auto;background:linear-gradient(135deg,#0058a3,#004585);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer;margin-right:8px}
+.pexport{margin:0 0 14px;padding:11px 13px;border-radius:12px;background:#e8f3e4;color:#205c1e;font-weight:800;border:1.5px solid #bfe0b8}
+.pexport.err{background:#fdecec;color:#8c1d18;border-color:#eec5c1}
+.pexport.hidden{display:none}
 #photoView{position:fixed;inset:0;background:#000;z-index:300;display:flex;flex-direction:column}
 #photoView.hidden{display:none}
 #photoView img{flex:1;width:100%;object-fit:contain;min-height:0}
@@ -595,9 +599,10 @@ document.getElementById("todoOnly").addEventListener("change", render);
 <div id="pendingPage" class="hidden">
   <div class="pbar"><button type="button" id="pendingBack">&larr; Back</button><div class="ptitle">Pending uploads<span id="pendingTitleCount"></span></div></div>
   <div class="pwrap">
-    <p class="pnote">Saved on this phone until you send them to the office. These photos live only on this device — send them, then tap &ldquo;Mark all sent&rdquo; to clear the list.</p>
+    <p class="pnote">Saved on this phone until you send them to the office. These photos live only on this device. Send them all with the button below (big sets go in batches — the page tells you when to tap again), send one at a time with a photo&rsquo;s own Send button, or download one ZIP file. Then tap &ldquo;Mark all sent&rdquo; to clear the list.</p>
     <p class="pnote warn hidden" id="pendingDbNote">This device could not open photo storage, so photos can&rsquo;t be saved on it. Let the office know.</p>
-    <div class="pactions"><button type="button" id="exportBtn">Send / export photos</button><button type="button" id="markSentBtn">Mark all sent</button></div>
+    <div class="pactions"><button type="button" id="exportBtn">Send / export photos</button><button type="button" id="zipBtn">Download one ZIP file</button><button type="button" id="markSentBtn">Mark all sent</button></div>
+    <div id="exportMsg" class="pexport hidden" role="status"></div>
     <div id="pendingEmpty" class="pempty">No pending photos yet.<br>Tap the grey <b>+</b> box on any switch to photograph its serial label.</div>
     <div id="pendingList"></div>
   </div>
@@ -964,10 +969,22 @@ function renderPending(){
       '<div class="pser">' + esc(rec.serial || rec.deviceId) + (rec.model ? ' · ' + esc(rec.model) : '') + '</div>' +
       (rec.load ? '<div class="pload">' + esc(rec.load) + '</div>' : '') +
       '<div class="pcrew">' + esc(rec.crewName || "Unknown crew") + ' · ' + esc(fmtTime(rec.timestamp)) + '</div></div>' +
-      '<button type="button" class="pdel" data-del="' + esc(rec.id) + '">Delete</button></div>';
+      '<span style="flex:0 0 auto"><button type="button" class="psend" data-send="' + esc(rec.id) + '">Send</button><button type="button" class="pdel" data-del="' + esc(rec.id) + '">Delete</button></span></div>';
   }).join("");
 }
 document.getElementById("pendingList").addEventListener("click", function(e){
+  var send = e.target.closest("[data-send]");
+  if (send) {
+    var srec = null;
+    PENDING.forEach(function(r){ if (r.id === send.getAttribute("data-send")) srec = r; });
+    if (!srec) return;
+    var sfile = new File([srec.imageBlob], fileNameFor(srec), {type: (srec.imageBlob && srec.imageBlob.type) || "image/jpeg"});
+    shareFiles([sfile], "Serial photo — " + (srec.room || "") + " " + (srec.serial || "")).then(function(res){
+      if (res.ok) exportStatus("Sent ✓ " + (srec.room || "Switch") + " · " + (srec.serial || srec.deviceId));
+      else shareFailStatus(res, "that photo");
+    });
+    return;
+  }
   var del = e.target.closest("[data-del]");
   if (del) {
     var id = del.getAttribute("data-del");
@@ -1000,6 +1017,65 @@ document.getElementById("pvClose").addEventListener("click", function(){
 });
 /* Send / export + mark sent */
 var exportedOnce = false;
+/* makeZipBlob(entries) -> Promise<Blob "application/zip"> — ZIP STORE method, no deps (~/workspace/zipstore/zipstore.js, python-verified) */
+function makeZipBlob(entries) {
+  var CRC_TABLE = null;
+  function crcTable() {
+    if (CRC_TABLE) return CRC_TABLE;
+    var t = new Uint32Array(256);
+    for (var n = 0; n < 256; n++) {
+      var c = n;
+      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[n] = c >>> 0;
+    }
+    return (CRC_TABLE = t);
+  }
+  function crc32(bytes) {
+    var t = crcTable(), crc = 0xFFFFFFFF;
+    for (var i = 0; i < bytes.length; i++) crc = t[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function u16(v) { var b = new Uint8Array(2); new DataView(b.buffer).setUint16(0, v, true); return b; }
+  function u32(v) { var b = new Uint8Array(4); new DataView(b.buffer).setUint32(0, v >>> 0, true); return b; }
+  function dosDateTime(d) {
+    var time = ((d.getHours() & 31) << 11) | ((d.getMinutes() & 63) << 5) | ((d.getSeconds() >> 1) & 31);
+    var date = (((Math.max(1980, d.getFullYear()) - 1980) & 127) << 9) | (((d.getMonth() + 1) & 15) << 5) | (d.getDate() & 31);
+    return { time: time, date: date };
+  }
+  var enc = new TextEncoder();
+  var now = dosDateTime(new Date());
+  var parts = [], central = [], offset = 0;
+  var chain = Promise.resolve();
+  entries.forEach(function (entry) {
+    chain = chain.then(function () {
+      return entry.blob.arrayBuffer().then(function (buf) {
+        var data = new Uint8Array(buf);
+        var nameBytes = enc.encode(entry.name);
+        var crc = crc32(data), size = data.length;
+        var local = [
+          u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(now.time), u16(now.date),
+          u32(crc), u32(size), u32(size), u16(nameBytes.length), u16(0), nameBytes, data
+        ];
+        var localSize = 30 + nameBytes.length + size;
+        var cent = [
+          u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(now.time), u16(now.date),
+          u32(crc), u32(size), u32(size), u16(nameBytes.length), u16(0), u16(0), u16(0),
+          u16(0), u32(0), u32(offset), nameBytes
+        ];
+        local.forEach(function (p) { parts.push(p); });
+        cent.forEach(function (p) { central.push(p); });
+        offset += localSize;
+      });
+    });
+  });
+  return chain.then(function () {
+    var cdStart = offset, cdSize = 0;
+    central.forEach(function (p) { cdSize += p.length; parts.push(p); });
+    [u32(0x06054b50), u16(0), u16(0), u16(entries.length), u16(entries.length),
+     u32(cdSize), u32(cdStart), u16(0)].forEach(function (p) { parts.push(p); });
+    return new Blob(parts, { type: "application/zip" });
+  });
+}
 function fileNameFor(rec){
   var base = ((rec.room || "room") + "-" + (rec.serial || rec.deviceId || "switch")).replace(/[^A-Za-z0-9]+/g, "_");
   var t = (rec.imageBlob && rec.imageBlob.type) || "image/jpeg";
@@ -1021,19 +1097,65 @@ function downloadBlob(blob, name){
   a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
+/* Send flow — every outcome is reported on screen, nothing fails silently.
+   Share goes in batches (big multi-photo shares are the ones phones refuse);
+   each photo also has its own Send button; the ZIP is one single download. */
+function exportStatus(msg, isErr){
+  var el = document.getElementById("exportMsg");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  el.classList.toggle("err", !!isErr);
+}
+function shareFiles(files, title){
+  return new Promise(function(resolve){
+    if (!navigator.share || !navigator.canShare) { resolve({ok: false, why: "unavailable"}); return; }
+    var can = false;
+    try { can = navigator.canShare({files: files}); } catch (e) { can = false; }
+    if (!can) { resolve({ok: false, why: "refused"}); return; }
+    navigator.share({files: files, title: title}).then(function(){ resolve({ok: true}); })
+      .catch(function(err){ resolve({ok: false, why: (err && err.name === "AbortError") ? "cancelled" : "failed", err: err}); });
+  });
+}
+function shareFailStatus(res, what){
+  if (res.why === "cancelled") exportStatus("Send cancelled — nothing was sent. Tap Send again when you're ready.", true);
+  else if (res.why === "unavailable") exportStatus("This view can't share photos. Open this page in Safari to send, or use “Download one ZIP file” below.", true);
+  else exportStatus("The phone refused to send " + what + ". Try the Send button on a single photo, or “Download one ZIP file”.", true);
+}
+var BATCH = 8;
+var batchIdx = 0;
 document.getElementById("exportBtn").addEventListener("click", function(){
-  if (!PENDING.length) { alert("No pending photos to send yet."); return; }
+  if (!PENDING.length) { exportStatus("No pending photos to send yet.", true); return; }
   var rows = PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; });
-  var files = rows.map(function(rec){ return new File([rec.imageBlob], fileNameFor(rec), {type: (rec.imageBlob && rec.imageBlob.type) || "image/jpeg"}); });
-  var manifest = new File([buildManifest(rows)], "switch-photos-manifest.txt", {type: "text/plain"});
-  var all = files.concat([manifest]);
-  if (navigator.canShare && navigator.canShare({files: all})) {
-    navigator.share({files: all, title: "Switch serial photos — 9700 Blandford"}).then(function(){ exportedOnce = true; }).catch(function(){});
-    return;
-  }
-  downloadBlob(new Blob([buildManifest(rows)], {type: "text/plain"}), "switch-photos-manifest.txt");
-  files.forEach(function(f, i){ setTimeout(function(){ downloadBlob(f, f.name); }, 400 * (i + 1)); });
-  exportedOnce = true;
+  if (batchIdx >= rows.length) batchIdx = 0;
+  var slice = rows.slice(batchIdx, batchIdx + BATCH);
+  var files = slice.map(function(rec){ return new File([rec.imageBlob], fileNameFor(rec), {type: (rec.imageBlob && rec.imageBlob.type) || "image/jpeg"}); });
+  if (batchIdx === 0) files.push(new File([buildManifest(rows)], "switch-photos-manifest.txt", {type: "text/plain"}));
+  var from = batchIdx + 1, to = batchIdx + slice.length;
+  shareFiles(files, "Switch serial photos — 9700 Blandford").then(function(res){
+    if (!res.ok) { shareFailStatus(res, "that batch"); return; }
+    batchIdx = to;
+    if (batchIdx >= rows.length) {
+      exportedOnce = true;
+      batchIdx = 0;
+      exportStatus("All " + rows.length + " photos sent ✓ — you can tap “Mark all sent” to clear this phone.");
+    } else {
+      exportStatus("Sent photos " + from + "–" + to + " of " + rows.length + " ✓ — tap “Send / export photos” again for the next batch.");
+    }
+  });
+});
+document.getElementById("zipBtn").addEventListener("click", function(){
+  if (!PENDING.length) { exportStatus("No pending photos to download yet.", true); return; }
+  var rows = PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; });
+  var entries = rows.map(function(rec){ return {name: fileNameFor(rec), blob: rec.imageBlob}; });
+  entries.push({name: "switch-photos-manifest.txt", blob: new Blob([buildManifest(rows)], {type: "text/plain"})});
+  exportStatus("Building one ZIP file of all " + rows.length + " photos…");
+  makeZipBlob(entries).then(function(zip){
+    downloadBlob(zip, "blandford-switch-photos.zip");
+    exportedOnce = true;
+    exportStatus("ZIP downloaded ✓ — it's in the Files app (Downloads). You can share it from there. Then tap “Mark all sent”.");
+  }).catch(function(){
+    exportStatus("The ZIP could not be built on this phone. Try the Send button on a single photo instead.", true);
+  });
 });
 document.getElementById("markSentBtn").addEventListener("click", function(){
   if (!PENDING.length) return;
@@ -1081,7 +1203,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.4";
+  var BUILD = "2026-11-23.5";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
