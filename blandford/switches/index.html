@@ -1327,9 +1327,9 @@ function exportStatus(msg, isErr){
 }
 function shareFiles(files, title){
   return new Promise(function(resolve){
-    if (!navigator.share || !navigator.canShare) { resolve({ok: false, why: "unavailable"}); return; }
-    var can = false;
-    try { can = navigator.canShare({files: files}); } catch (e) { can = false; }
+    if (!navigator.share) { resolve({ok: false, why: "unavailable"}); return; }
+    var can = true; /* older iOS may have share without canShare — attempt the share rather than giving up */
+    if (navigator.canShare) { try { can = navigator.canShare({files: files}); } catch (e) { can = false; } }
     if (!can) { resolve({ok: false, why: "refused"}); return; }
     navigator.share({files: files, title: title}).then(function(){ resolve({ok: true}); })
       .catch(function(err){ resolve({ok: false, why: (err && err.name === "AbortError") ? "cancelled" : "failed", err: err}); });
@@ -1342,21 +1342,33 @@ function shareFailStatus(res, what){
 }
 var BATCH = 8;
 var batchIdx = 0;
+var exportPhase = "photos"; /* photos -> manifest -> done. Photos share ALONE: mixing a .txt into a photo share is the combo iOS targets refuse. */
 document.getElementById("exportBtn").addEventListener("click", function(){
   if (!PENDING.length) { exportStatus("No pending photos to send yet.", true); return; }
   var rows = PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; });
+  if (exportPhase === "manifest") {
+    var mf = new File([buildManifest(rows)], "switch-photos-manifest.txt", {type: "text/plain"});
+    shareFiles([mf], "Switch photo list — 9700 Blandford").then(function(res){
+      if (!res.ok) { shareFailStatus(res, "the photo list"); return; }
+      exportPhase = "done";
+      exportedOnce = true;
+      exportStatus("Photo list sent ✓ — everything is with the office. You can tap “Mark all sent” to clear this phone.");
+    });
+    return;
+  }
+  if (exportPhase === "done") { exportPhase = "photos"; batchIdx = 0; }
   if (batchIdx >= rows.length) batchIdx = 0;
   var slice = rows.slice(batchIdx, batchIdx + BATCH);
   var files = slice.map(function(rec){ return new File([rec.imageBlob], fileNameFor(rec), {type: (rec.imageBlob && rec.imageBlob.type) || "image/jpeg"}); });
-  if (batchIdx === 0) files.push(new File([buildManifest(rows)], "switch-photos-manifest.txt", {type: "text/plain"}));
   var from = batchIdx + 1, to = batchIdx + slice.length;
-  shareFiles(files, "Switch serial photos — 9700 Blandford").then(function(res){
+  shareFiles(files, "Switch photos — 9700 Blandford").then(function(res){
     if (!res.ok) { shareFailStatus(res, "that batch"); return; }
     batchIdx = to;
     if (batchIdx >= rows.length) {
       exportedOnce = true;
+      exportPhase = "manifest";
       batchIdx = 0;
-      exportStatus("All " + rows.length + " photos sent ✓ — you can tap “Mark all sent” to clear this phone.");
+      exportStatus("All " + rows.length + " photos sent ✓ — tap “Send / export photos” once more to also send the photo list, or tap “Mark all sent” to finish.");
     } else {
       exportStatus("Sent photos " + from + "–" + to + " of " + rows.length + " ✓ — tap “Send / export photos” again for the next batch.");
     }
@@ -1369,9 +1381,20 @@ document.getElementById("zipBtn").addEventListener("click", function(){
   entries.push({name: "switch-photos-manifest.txt", blob: new Blob([buildManifest(rows)], {type: "text/plain"})});
   exportStatus("Building one ZIP file of all " + rows.length + " photos…");
   makeZipBlob(entries).then(function(zip){
-    downloadBlob(zip, "blandford-switch-photos.zip");
-    exportedOnce = true;
-    exportStatus("ZIP downloaded ✓ — it's in the Files app (Downloads). You can share it from there. Then tap “Mark all sent”.");
+    /* Try sharing the one ZIP file first (best path from a Home Screen app, where
+       downloads strand); if sharing isn't possible here, download it instead. */
+    var zf = new File([zip], "blandford-switch-photos.zip", {type: "application/zip"});
+    shareFiles([zf], "Switch photos ZIP — 9700 Blandford").then(function(res){
+      if (res.ok) {
+        exportedOnce = true;
+        exportStatus("ZIP sent ✓ — all " + rows.length + " photos + the photo list in one file. Then tap “Mark all sent”.");
+        return;
+      }
+      if (res.why === "cancelled") { exportStatus("Send cancelled — the ZIP wasn't sent. Tap “Download one ZIP file” to try again.", true); return; }
+      downloadBlob(zip, "blandford-switch-photos.zip");
+      exportedOnce = true;
+      exportStatus("ZIP downloaded ✓ — it's in the Files app (Downloads). You can share it from there. Then tap “Mark all sent”.");
+    });
   }).catch(function(){
     exportStatus("The ZIP could not be built on this phone. Try the Send button on a single photo instead.", true);
   });
@@ -1422,7 +1445,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.7";
+  var BUILD = "2026-11-23.8";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
