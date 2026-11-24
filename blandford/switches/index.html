@@ -34,6 +34,12 @@ h2.room{color:var(--brand2);font-size:1.25rem;margin:22px 2px 10px}
 .dev .load{font-weight:700;margin-top:2px}
 .dev .load.missing{color:var(--amber);font-weight:700}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.locbtn{margin-top:9px;width:100%;background:#eef5fc;color:var(--brand2);border:1.5px solid #bcd6ee;border-radius:10px;padding:11px;font-weight:800;font-size:.95rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.locpanel{margin-top:9px;background:#f6fafd;border:1.5px solid #d7e7f5;border-radius:10px;padding:8px 12px}
+.locpanel.hidden{display:none}
+.locrow{display:flex;gap:10px;padding:5px 0;align-items:baseline}
+.lock{flex:0 0 104px;font-weight:900;color:var(--brand2);font-size:.85rem;text-transform:uppercase;letter-spacing:.03em}
+.locv{font-weight:700;color:var(--brand2)}
 .seg button{border:1.5px solid #bcd6ee;background:#fff;color:var(--brand2);border-radius:12px;padding:14px 6px;font-weight:800;font-size:1rem;cursor:pointer;min-height:52px;-webkit-tap-highlight-color:transparent}
 .seg button:active{transform:scale(.97)}
 .seg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -354,6 +360,31 @@ try { FIELD = JSON.parse(localStorage.getItem(KEY + ":field") || "[]"); } catch 
 function saveField(){ try { localStorage.setItem(KEY + ":field", JSON.stringify(FIELD)); } catch (e) {} }
 function allDevices(){ return DEVICES.concat(FIELD); }
 function devId(d){ return d.id || d.serial; }
+/* Location & load panel — built only from what's on the tracker; anything missing shows "Not on file" */
+function floorOf(room){
+  if (!room) return null;
+  for (var i = 0; i < FLOORS.length; i++)
+    for (var j = 0; j < FLOORS[i].rooms.length; j++)
+      if (FLOORS[i].rooms[j][0] === room) return FLOORS[i].name;
+  return null;
+}
+function locTextFor(d){
+  if (!d.room) return "Not on file";
+  var f = floorOf(d.room);
+  return d.room + (f ? " · " + f : "");
+}
+function controlsTextFor(d){
+  if (!d.load) return "Not on file";
+  if (/no load/i.test(d.load)) return "NO LOAD — this position controls nothing (companion in the switch box)";
+  return d.load;
+}
+function gangTextFor(d, did){
+  var src = (d.load || "") + " " + ((typeof FIELDNOTES !== "undefined" && FIELDNOTES[did]) || "");
+  var m = src.match(/gang\s*\d+(\s*of\s*\d+)?/i);
+  if (!m) return null;
+  var g = m[0].replace(/\s+/g, " ");
+  return g.charAt(0).toUpperCase() + g.slice(1);
+}
 var PHOTOMAP = {}; /* deviceId -> {count, url} for pending serial photos; filled by the photo script at the end of the page */
 var ROOMVIZ = {
   "FOYER": {img: "foyer.jpg", plan: "FOYER · E1.1 · 1st floor"},
@@ -546,6 +577,13 @@ function render(){
       STAGES.forEach(function(label, i){
         out += '<button type="button" data-stage="' + i + '"' + (s===i ? ' class="on' + (i===3?' done':'') + '"' : '') + '>' + label + '</button>';
       });
+      out += '</div>';
+      out += '<button type="button" class="locbtn" data-loc="' + esc(did) + '">Location &amp; what it controls</button>';
+      out += '<div class="locpanel hidden" id="loc-' + esc(did) + '">';
+      out += '<div class="locrow"><span class="lock">Located in</span><span class="locv">' + esc(locTextFor(d)) + '</span></div>';
+      var gang = gangTextFor(d, did);
+      if (gang) out += '<div class="locrow"><span class="lock">Box position</span><span class="locv">' + esc(gang) + '</span></div>';
+      out += '<div class="locrow"><span class="lock">Controls</span><span class="locv">' + esc(controlsTextFor(d)) + '</span></div>';
       out += '</div></div>';
     });
   });
@@ -568,6 +606,15 @@ document.getElementById("pmapBody").addEventListener("click", function(e){
 document.getElementById("list").addEventListener("click", function(e){
   var vb = e.target.closest(".vizbtn");
   if (vb) { var nx = vb.nextElementSibling; if (nx) nx.classList.toggle("hidden"); return; }
+  var lb = e.target.closest("[data-loc]");
+  if (lb) {
+    var lp = document.getElementById("loc-" + lb.getAttribute("data-loc"));
+    if (lp) {
+      lp.classList.toggle("hidden");
+      lb.textContent = lp.classList.contains("hidden") ? "Location & what it controls" : "Hide location & load";
+    }
+    return;
+  }
   var phEl = e.target.closest(".roomphotos .ph");
   if (phEl) {
     var wasBig = phEl.classList.contains("big");
@@ -1203,7 +1250,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.5";
+  var BUILD = "2026-11-23.6";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
