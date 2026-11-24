@@ -178,6 +178,9 @@ body:has(.st-footer)::before{content:"";position:fixed;inset:0;z-index:-1;backgr
 .pactions{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 14px}
 .pactions button{flex:1 1 200px;padding:14px;border-radius:12px;font-weight:800;font-size:1.02rem;cursor:pointer}
 #exportBtn{background:linear-gradient(135deg,#0058a3,#004585);color:#fff;border:0}
+#oneTapBtn{display:block;width:100%;background:linear-gradient(135deg,#1e7a34,#14632a);color:#fff;border:0;border-radius:14px;padding:20px;font-weight:900;font-size:1.3rem;cursor:pointer;margin:0 0 10px;-webkit-tap-highlight-color:transparent}
+#oneTapBtn small{display:block;font-weight:700;font-size:.88rem;opacity:.93;margin-top:3px}
+#oneTapBtn:active{transform:scale(.99)}
 #markSentBtn{background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee}
 .pempty{color:var(--muted);font-weight:700;text-align:center;padding:26px 12px;background:rgba(255,255,255,.88);border:1.5px dashed #bcd6ee;border-radius:14px;line-height:1.5}
 .pcard{display:flex;gap:12px;background:rgba(255,255,255,.94);border:1px solid var(--line);border-left:5px solid var(--brand);border-radius:14px;padding:10px;margin-bottom:10px;align-items:center;box-shadow:0 2px 8px rgba(0,69,133,.06)}
@@ -687,9 +690,10 @@ document.getElementById("todoOnly").addEventListener("change", render);
 <div id="pendingPage" class="hidden">
   <div class="pbar"><button type="button" id="pendingBack">&larr; Back</button><div class="ptitle">Pending uploads<span id="pendingTitleCount"></span></div></div>
   <div class="pwrap">
-    <p class="pnote">Saved on this phone until you send them to the office. These photos live only on this device. Send them all with the button below (big sets go in batches — the page tells you when to tap again), send one at a time with a photo&rsquo;s own Send button, or download one ZIP file. Then tap &ldquo;Mark all sent&rdquo; to clear the list.</p>
+    <p class="pnote">Saved on this phone until you send them to the office. <b>One tap sends everything:</b> tap the big green button, pick where to send (Messages, Mail, WhatsApp&hellip;), done. Then tap &ldquo;Mark all sent&rdquo; to clear the list.</p>
     <p class="pnote warn hidden" id="pendingDbNote">This device could not open photo storage, so photos can&rsquo;t be saved on it. Let the office know.</p>
-    <div class="pactions"><button type="button" id="exportBtn">Send / export photos</button><button type="button" id="zipBtn">Download one ZIP file</button><button type="button" id="markSentBtn">Mark all sent</button></div>
+    <button type="button" id="oneTapBtn">📤 SEND ALL PHOTOS<span id="oneTapCount"></span> — ONE TAP<small>One file with every photo — you pick where it goes</small></button>
+    <div class="pactions"><button type="button" id="exportBtn">Send in small batches instead</button><button type="button" id="markSentBtn">Mark all sent</button></div>
     <div id="exportMsg" class="pexport hidden" role="status"></div>
     <div id="pendingEmpty" class="pempty">No pending photos yet.<br>Tap the grey <b>+</b> box on any switch to photograph its serial label.</div>
     <div id="pendingList"></div>
@@ -896,6 +900,8 @@ function updateBadge(){
   var b2 = document.getElementById("pendingCount2");
   if (b2) b2.textContent = PENDING.length;
   document.getElementById("pendingTitleCount").textContent = PENDING.length ? " (" + PENDING.length + ")" : "";
+  var otc = document.getElementById("oneTapCount");
+  if (otc) otc.textContent = PENDING.length ? " (" + PENDING.length + ")" : "";
 }
 function refreshPhotos(){
   return idbAll().then(function(rows){
@@ -1337,8 +1343,8 @@ function shareFiles(files, title){
 }
 function shareFailStatus(res, what){
   if (res.why === "cancelled") exportStatus("Send cancelled — nothing was sent. Tap Send again when you're ready.", true);
-  else if (res.why === "unavailable") exportStatus("This view can't share photos. Open this page in Safari to send, or use “Download one ZIP file” below.", true);
-  else exportStatus("The phone refused to send " + what + ". Try the Send button on a single photo, or “Download one ZIP file”.", true);
+  else if (res.why === "unavailable") exportStatus("This view can't share. Open this page in Safari to send, or tap the big green SEND ALL button — it downloads one ZIP file instead.", true);
+  else exportStatus("The phone refused to send " + what + ". Tap the big green SEND ALL button — one file usually goes through — or the Send button on a single photo.", true);
 }
 var BATCH = 8;
 var batchIdx = 0;
@@ -1368,35 +1374,36 @@ document.getElementById("exportBtn").addEventListener("click", function(){
       exportedOnce = true;
       exportPhase = "manifest";
       batchIdx = 0;
-      exportStatus("All " + rows.length + " photos sent ✓ — tap “Send / export photos” once more to also send the photo list, or tap “Mark all sent” to finish.");
+      exportStatus("All " + rows.length + " photos sent ✓ — tap “Send in small batches” once more to also send the photo list, or tap “Mark all sent” to finish.");
     } else {
-      exportStatus("Sent photos " + from + "–" + to + " of " + rows.length + " ✓ — tap “Send / export photos” again for the next batch.");
+      exportStatus("Sent photos " + from + "–" + to + " of " + rows.length + " ✓ — tap “Send in small batches” again for the next batch.");
     }
   });
 });
-document.getElementById("zipBtn").addEventListener("click", function(){
-  if (!PENDING.length) { exportStatus("No pending photos to download yet.", true); return; }
+/* THE front door: one tap → one ZIP of everything → one share sheet, crew picks the app.
+   Fallbacks, in order: share unavailable/refused → the same ZIP downloads instead;
+   ZIP can't be built → the batch flow below (never the front door). */
+document.getElementById("oneTapBtn").addEventListener("click", function(){
+  if (!PENDING.length) { exportStatus("No pending photos to send yet.", true); return; }
   var rows = PENDING.slice().sort(function(a, b){ return a.timestamp - b.timestamp; });
   var entries = rows.map(function(rec){ return {name: fileNameFor(rec), blob: rec.imageBlob}; });
   entries.push({name: "switch-photos-manifest.txt", blob: new Blob([buildManifest(rows)], {type: "text/plain"})});
-  exportStatus("Building one ZIP file of all " + rows.length + " photos…");
+  exportStatus("Packing all " + rows.length + " photos into one file…");
   makeZipBlob(entries).then(function(zip){
-    /* Try sharing the one ZIP file first (best path from a Home Screen app, where
-       downloads strand); if sharing isn't possible here, download it instead. */
     var zf = new File([zip], "blandford-switch-photos.zip", {type: "application/zip"});
-    shareFiles([zf], "Switch photos ZIP — 9700 Blandford").then(function(res){
+    shareFiles([zf], "Switch photos — 9700 Blandford").then(function(res){
       if (res.ok) {
         exportedOnce = true;
-        exportStatus("ZIP sent ✓ — all " + rows.length + " photos + the photo list in one file. Then tap “Mark all sent”.");
+        exportStatus("Sent ✓ — all " + rows.length + " photos went in one file. Then tap “Mark all sent” to clear this phone.");
         return;
       }
-      if (res.why === "cancelled") { exportStatus("Send cancelled — the ZIP wasn't sent. Tap “Download one ZIP file” to try again.", true); return; }
+      if (res.why === "cancelled") { exportStatus("Send cancelled — nothing was sent. Tap the big green button to try again.", true); return; }
       downloadBlob(zip, "blandford-switch-photos.zip");
       exportedOnce = true;
-      exportStatus("ZIP downloaded ✓ — it's in the Files app (Downloads). You can share it from there. Then tap “Mark all sent”.");
+      exportStatus("Sharing isn't available here, so the ZIP downloaded instead ✓ — one file with all " + rows.length + " photos + the list, in the Files app (Downloads). Share it from there, then tap “Mark all sent”.");
     });
   }).catch(function(){
-    exportStatus("The ZIP could not be built on this phone. Try the Send button on a single photo instead.", true);
+    exportStatus("One file couldn't be built on this phone. Use “Send in small batches instead” below, or a photo's own Send button.", true);
   });
 });
 document.getElementById("markSentBtn").addEventListener("click", function(){
@@ -1445,7 +1452,7 @@ routeFromHash();
 <script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-23.10";
+  var BUILD = "2026-11-24.1";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
