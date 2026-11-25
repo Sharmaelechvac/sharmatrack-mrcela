@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){try{if(localStorage.getItem("sk-scheme")==="dark")document.documentElement.setAttribute("data-scheme","dark")}catch(e){}})()</script>
 <title>Smart Switches — 9700 Blandford Rd · SHARMATRACK</title>
 <link rel="icon" href="/sharmatrack-mrcela/sharmatrack-app-icon.png">
 <link rel="apple-touch-icon" href="/sharmatrack-mrcela/sharmatrack-app-icon.png">
@@ -252,6 +253,77 @@ h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,
 #sheetCancel{display:block;width:100%;margin-top:8px;background:#fff;color:var(--brand2);border:1.5px solid #bcd6ee;font-weight:800;font-size:1rem;border-radius:12px;padding:12px;cursor:pointer}
 #toast{position:fixed;left:50%;transform:translate(-50%,20px);bottom:calc(18px + env(safe-area-inset-bottom));z-index:280;background:#16324a;color:#fff;font-weight:700;font-size:1rem;border-radius:999px;padding:13px 20px;box-shadow:0 8px 24px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
+/* ——— Appearance: Light | Dark (fleet standard, Sanjay 2026-11-25) ———
+   Same storage key + attribute as the Sharma kit (sk-scheme / data-scheme),
+   so a choice made anywhere in this app carries to every page. Opens LIGHT
+   by default; dark only when the crew member picks it here or in the shell. */
+:root{--tilerest:rgba(238,245,252,.9)}
+.appbar{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,69,133,.06)}
+.appbar .applabel{font-weight:900;color:var(--brand2);font-size:1rem}
+.appseg{margin-left:auto;display:flex;border:1.5px solid #bcd6ee;border-radius:999px;overflow:hidden}
+.appseg button{border:0;background:#fff;color:var(--brand2);font-weight:800;font-size:.98rem;padding:10px 20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.appseg button.on{background:var(--brand);color:#fff}
+html[data-scheme="dark"]{color-scheme:dark;--brand:#3d8fd1;--brand2:#a8cdf0;--ink:#e9f2f9;--muted:#9db6cc;--line:#31465e;--card:#1b2836;--bg:#0d141d;--ok:#2ea35f;--amber:#d99a26;--tilerest:rgba(23,36,51,.92)}
+html[data-scheme="dark"] body{background:var(--bg)}
+html[data-scheme="dark"] body:has(.st-footer)::before{background-color:#0a0f16}
+html[data-scheme="dark"] .jobbar{background:#16283c}
+html[data-scheme="dark"] .subbar{background:rgba(16,25,36,.92)}
+html[data-scheme="dark"] .subbar button,html[data-scheme="dark"] .topbar button{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .subbar #pendingBtn{background:#0058a3;border-color:#0058a3;color:#fff}
+html[data-scheme="dark"] .pbadge{color:#16324a}
+html[data-scheme="dark"] .topbar{background:var(--card)}
+html[data-scheme="dark"] .hero,html[data-scheme="dark"] .count,html[data-scheme="dark"] .controls,html[data-scheme="dark"] .scan,html[data-scheme="dark"] .rules,html[data-scheme="dark"] .dev,html[data-scheme="dark"] .appbar{background:rgba(22,34,48,.9)}
+html[data-scheme="dark"] .hero .trade,html[data-scheme="dark"] h2.room,html[data-scheme="dark"] .gangrow .gn{background:#0058a3}
+html[data-scheme="dark"] .pmap{background:rgba(22,34,48,.92)}
+html[data-scheme="dark"] .pmap .floorname{background:#26435f;color:#eaf3fb}
+html[data-scheme="dark"] .pmtile{border-color:#33506e}
+html[data-scheme="dark"] #mapToggle{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .pbar{background:#16283c}
+html[data-scheme="dark"] .pbar button{color:#16324a}
+html[data-scheme="dark"] .pnote{background:rgba(22,34,48,.9)}
+html[data-scheme="dark"] .pnote.warn{background:#3a2f14;border-color:#6b5518;color:#f0d48a}
+html[data-scheme="dark"] .pempty{background:rgba(22,34,48,.9);border-color:#33506e}
+html[data-scheme="dark"] .pcard{background:rgba(27,40,54,.95)}
+html[data-scheme="dark"] .pcard .pimg{background:#22344a}
+html[data-scheme="dark"] .pcard .pdel{background:var(--card)}
+html[data-scheme="dark"] #markSentBtn{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .pexport{background:#14301f;color:#a9dcb2;border-color:#2c5c38}
+html[data-scheme="dark"] .pexport.err{background:#3d1a17;color:#f2b8b2;border-color:#6e342e}
+html[data-scheme="dark"] .controls input,html[data-scheme="dark"] .controls select,html[data-scheme="dark"] .scan input,html[data-scheme="dark"] .crewrow input,html[data-scheme="dark"] .crewrow select,html[data-scheme="dark"] .sheet input,html[data-scheme="dark"] .sheet select{background:#101a26;border-color:#33506e}
+html[data-scheme="dark"] .crewrow input.needname,html[data-scheme="dark"] .crewrow select.needname,html[data-scheme="dark"] .sheet input.needname,html[data-scheme="dark"] .sheet select.needname{background:#3a2f14}
+html[data-scheme="dark"] .locbtn{background:#16283c;border-color:#33506e}
+html[data-scheme="dark"] .locpanel{background:#141f2c;border-color:#2c4258}
+html[data-scheme="dark"] .dev .model{background:#1d3247}
+html[data-scheme="dark"] .statusbtn{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .statusbtn.done{background:var(--ok);border-color:var(--ok);color:#fff}
+html[data-scheme="dark"] .seg button{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .seg button.on{background:#0058a3;border-color:#0058a3;color:#fff}
+html[data-scheme="dark"] .note{background:#3a2f14;border-color:#6b5518;color:#f3e3ae}
+html[data-scheme="dark"] .matchcard{background:#14301f}
+html[data-scheme="dark"] .matchcard .undo{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .nomatch{background:#3a2f14}
+html[data-scheme="dark"] .fieldnote{background:#14301f;color:#a9dcb2;border-color:#2c5c38}
+html[data-scheme="dark"] .gangrow{background:#16283c;border-color:#33506e}
+html[data-scheme="dark"] .sensorrow{background:#14301f;color:#a9dcb2;border-color:#2c5c38}
+html[data-scheme="dark"] .vizbtn{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .roomviz{border-color:#33506e}
+html[data-scheme="dark"] .roomviz .vizcap{background:#16283c}
+html[data-scheme="dark"] .roomphotos .ph{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .roomphotos .phcap{background:#16283c}
+html[data-scheme="dark"] .lph{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .lph .lphcap{background:#16283c}
+html[data-scheme="dark"] .lphadd{background:#141f2c;border-color:#33506e}
+html[data-scheme="dark"] .photobox{background:#22344a;border-color:#33506e}
+html[data-scheme="dark"] .sheet{background:var(--card)}
+html[data-scheme="dark"] .sheet .cancelBtn{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .pkind{background:#26435f}
+html[data-scheme="dark"] .pkind.load{background:#1e7a34}
+html[data-scheme="dark"] #crewbar{background:rgba(16,25,36,.95)}
+html[data-scheme="dark"] #cbScan{background:var(--card);border-color:#33506e}
+html[data-scheme="dark"] .appseg{border-color:#33506e}
+html[data-scheme="dark"] .appseg button{background:var(--card)}
+html[data-scheme="dark"] .appseg button.on{background:#0058a3;color:#fff}
+html[data-scheme="dark"] #toast{border:1px solid #33506e}
 </style></head><body>
 <div class="jobbar"><span class="jb-brand"><img src="/sharmatrack-mrcela/sharmatrack-app-icon.png" alt="">SHARMATRACK</span><span class="jb-addr">9700 Blandford Rd · Orlando, FL</span></div>
 <div class="subbar"><a href="/sharmatrack-mrcela/blandford/">&larr; 9700 Blandford</a><button type="button" id="pendingBtn">Pending uploads<span class="pbadge" id="pendingCount">0</span></button><button type="button" onclick="location.replace(location.pathname + '?t=' + Date.now())">&#8635; Refresh</button></div>
@@ -259,6 +331,7 @@ h2.room{position:sticky;top:48px;z-index:40;box-shadow:0 4px 10px rgba(0,69,133,
   <div class="duo"><span class="duo-card"><img class="duo-sharma" src="/sharmatrack-mrcela/logo.png" alt="Sharma Electric &amp; HVAC"></span><span class="duo-card mrcela"><img class="duo-mrcela" src="/sharmatrack-mrcela/mrcela-logo.png" alt="MRCELA Custom Homes"></span></div>
   <div class="clubrow"><img src="/sharmatrack-mrcela/blandford/lakenona-logo.png" alt="Lake Nona Golf &amp; Country Club"></div>
   <div class="hero"><img class="tracker-logo" src="/sharmatrack-mrcela/blandford/crestron-tracker-banner.png" alt="Crestron Smart Switch Tracker"><span class="trade">ELECTRICAL</span><h1>Smart Switches</h1><div class="sub">9700 Blandford Rd · Orlando, FL · MRCELA Custom Homes<br>Crestron Horizon dimmers &amp; keypads — tracked by serial number</div></div>
+  <div class="appbar"><span class="applabel">Appearance</span><span class="appseg"><button type="button" id="appLight">Light</button><button type="button" id="appDark">Dark</button></span></div>
   <div class="pmap" id="progressMap">
     <div class="pmaphead"><div style="flex:1;min-width:0"><div class="st">Progress map · Electrical</div><div id="mapSummary">Loading…</div></div><button type="button" id="mapToggle">Hide</button></div>
     <div id="pmapFold">
@@ -562,7 +635,7 @@ function renderMap(){
       if (!total) return;
       var done = ver >= total;
       var pct = Math.round(100 * ver / total);
-      var style = done ? "" : ' style="background:linear-gradient(to top, rgba(28,124,67,.38) ' + pct + '%, rgba(238,245,252,.9) ' + pct + '%)"';
+      var style = done ? "" : ' style="background:linear-gradient(to top, rgba(28,124,67,.38) ' + pct + '%, var(--tilerest) ' + pct + '%)"';
       out += '<div class="pmtile' + (done ? " done" : "") + '" data-maproom="' + esc(room) + '"' + style + '><span class="pmname">' + esc(label) + '</span><span class="pmcount">' + ver + '/' + total + ' installed</span>' + (done ? '<span class="pmdone">DONE</span>' : '') + '</div>';
     });
     out += '</div>';
@@ -1450,9 +1523,31 @@ refreshPhotos();
 routeFromHash();
 </script>
 <script>
+/* Appearance toggle — fleet standard (Sanjay 2026-11-25). Shares the kit's
+   sk-scheme key so the choice carries across the whole app; light default. */
+(function(){
+  var bl = document.getElementById("appLight"), bd = document.getElementById("appDark");
+  if (!bl || !bd) return;
+  function sync(){
+    var dark = document.documentElement.getAttribute("data-scheme") === "dark";
+    bl.classList.toggle("on", !dark); bd.classList.toggle("on", dark);
+    bl.setAttribute("aria-checked", String(!dark)); bd.setAttribute("aria-checked", String(dark));
+  }
+  function set(v){
+    try { localStorage.setItem("sk-scheme", v); } catch(e){}
+    if (v === "dark") document.documentElement.setAttribute("data-scheme", "dark");
+    else document.documentElement.removeAttribute("data-scheme");
+    sync();
+  }
+  bl.addEventListener("click", function(){ set("light"); });
+  bd.addEventListener("click", function(){ set("dark"); });
+  sync();
+})();
+</script>
+<script>
 /* Freshness guard: if this phone is holding an older copy of the page, reload once to the current one. */
 (function(){
-  var BUILD = "2026-11-24.1";
+  var BUILD = "2026-11-25.1";
   try {
     var seen = null;
     try { seen = sessionStorage.getItem("swbuild"); } catch(e){}
